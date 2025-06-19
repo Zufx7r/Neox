@@ -1,27 +1,108 @@
-<script>
-async function register() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const confirmPassword = document.getElementById("confirmPassword").value;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register | Neox</title>
+  <link rel="stylesheet" href="default.css"/>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #f1f1f1;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .container {
+      background: #1f1f1f;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background-color: #2e2e2e;
+      color: white;
+    }
+    button {
+      padding: 12px 24px;
+      background: #00ffcc;
+      border: none;
+      color: black;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      width: 100%;
+    }
+    button:hover {
+      background: #00ddaa;
+    }
+    a {
+      display: block;
+      margin-top: 1rem;
+      color: #00ffcc;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="formContainer">
+    <h2>Register</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+    <button onclick="register()">Register</button>
+    <a href="login.html">Already have an account? Login</a>
+  </div>
 
-  if (password !== confirmPassword) {
-    alert("Passwords do not match.");
-    return;
-  }
+  <script>
+    const user = localStorage.getItem("user");
+    if (user) {
+      document.getElementById("formContainer").innerHTML = `
+        <h2>Logged in as ${user}</h2>
+        <button onclick="logout()">Logout</button>
+      `;
+    }
 
-  const res = await fetch("/.netlify/functions/signup", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
+    function logout() {
+      localStorage.removeItem("user");
+      location.reload();
+    }
 
-  const data = await res.json();
+    async function register() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
 
-  if (data.success) {
-    // ✅ Redirect to homepage after successful signup
-    window.location.href = "/";
-  } else {
-    alert(data.error || "Signup failed");
-  }
-}
-</script>
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      const res = await fetch("/.netlify/functions/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem("user", email);
+        window.location.href = "/";
+      } else {
+        alert(data.error || "Signup failed");
+      }
+    }
+  </script>
+</body>
+</html>
