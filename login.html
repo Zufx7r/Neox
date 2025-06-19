@@ -1,3 +1,4 @@
+<!-- login.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,61 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login | Neox</title>
   <link rel="stylesheet" href="default.css"/>
-  <style>
-    body {
-      background: radial-gradient(ellipse at center, #1a1a1a 0%, #0f0f0f 100%);
-      color: #f1f1f1;
-      font-family: Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-
-    .container {
-      background: #1f1f1f;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 5px;
-      background-color: #2e2e2e;
-      color: white;
-    }
-
-    button {
-      padding: 12px 24px;
-      background: #00ffcc;
-      border: none;
-      color: black;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
-      width: 100%;
-    }
-
-    button:hover {
-      background: #00ddaa;
-    }
-
-    a {
-      display: block;
-      margin-top: 1rem;
-      color: #00ffcc;
-      text-decoration: none;
-    }
-  </style>
 </head>
 <body>
   <div class="container">
@@ -70,30 +16,43 @@
     <a href="register.html">Don't have an account? Register</a>
   </div>
 
-  <script>
-    if (localStorage.getItem("user")) {
-      window.location.href = "dashboard.html";
-    }
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
-    async function login() {
-      const email = document.getElementById("email").value;
+    const firebaseConfig = {
+      apiKey: "AIzaSyC0w2CYNgPKciXQZ10h-vwnvW-8WmWiPdg",
+      authDomain: "loginpage-55633.firebaseapp.com",
+      projectId: "loginpage-55633",
+      storageBucket: "loginpage-55633.appspot.com",
+      messagingSenderId: "112787874903",
+      appId: "1:112787874903:web:54070d414ef38b7e40af12"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.login = async () => {
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
-      const res = await fetch("/.netlify/functions/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
-      });
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        if (!userCredential.user.emailVerified) {
+          alert("Please verify your email before logging in.");
+          return;
+        }
 
-      const result = await res.json();
-      if (result.success) {
         localStorage.setItem("user", email);
-        localStorage.setItem("name", result.name);
+        localStorage.setItem("name", userCredential.user.displayName || "User");
         window.location.href = "dashboard.html";
-      } else {
-        alert("Login failed: " + (result.message || result.error));
+      } catch (error) {
+        alert(error.message);
       }
-    }
+    };
   </script>
 </body>
 </html>
