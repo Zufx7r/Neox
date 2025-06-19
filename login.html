@@ -91,7 +91,7 @@
       const data = await res.json();
       if (data.login) {
         localStorage.setItem("user", email);
-        window.location.href = "/";
+        window.location.href = "dashboard";
       } else {
         alert("Login failed");
       }
