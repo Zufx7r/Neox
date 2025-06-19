@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Live Chat | Neox</title>
+  <link rel="stylesheet" href="default.css" />
   <style>
     html, body {
       margin: 0;
@@ -54,17 +55,6 @@
       margin-left: 8px;
     }
 
-    .message button {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      background: transparent;
-      border: none;
-      color: #ff4d4d;
-      cursor: pointer;
-      font-size: 0.9em;
-    }
-
     .chat-input {
       display: flex;
       gap: 8px;
@@ -108,35 +98,7 @@
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import {
-      getDatabase,
-      ref,
-      push,
-      onChildAdded,
-      remove,
-      child
-    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyABNtw-b-w0Cf4VIrWjLwSE1DUTZ3-JpxI",
-      authDomain: "loginpage-55633.firebaseapp.com",
-      projectId: "loginpage-55633",
-      storageBucket: "loginpage-55633.appspot.com",
-      messagingSenderId: "112787874903",
-      appId: "1:112787874903:android:00890b5c3a679cb440af12",
-      databaseURL: "https://loginpage-55633-default-rtdb.asia-southeast1.firebasedatabase.app"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const messagesRef = ref(db, "messages");
-
-    const chatBox = document.getElementById("chatBox");
-    const input = document.getElementById("messageInput");
-    const welcomeText = document.getElementById("welcomeText");
-
+  <script>
     const name = localStorage.getItem("name");
     const user = localStorage.getItem("user");
 
@@ -144,47 +106,50 @@
       window.location.href = "login.html";
     }
 
-    welcomeText.textContent = `Welcome, ${name}`;
+    document.getElementById("welcomeText").textContent = `Welcome, ${name}`;
+    const input = document.getElementById("messageInput");
+    const chatBox = document.getElementById("chatBox");
 
-    window.sendMessage = () => {
-      const message = input.value.trim();
-      if (!message) return;
+    async function loadMessages() {
+      try {
+        const res = await fetch("/.netlify/functions/chat");
+        const messages = await res.json();
+        messages.forEach(msg => addMessage(msg));
+      } catch {
+        chatBox.innerHTML = "<p style='color:red'>Failed to load messages.</p>";
+      }
+    }
 
-      push(messagesRef, {
-        name,
-        text: message,
-        timestamp: Date.now()
-      });
-
-      input.value = "";
-    };
-
-    onChildAdded(messagesRef, (snapshot) => {
-      const data = snapshot.val();
-      const msgId = snapshot.key;
-
+    function addMessage(msg) {
       const msgElem = document.createElement("div");
       msgElem.className = "message";
-
-      const time = new Date(data.timestamp);
-      const timeString = `${time.getHours().toString().padStart(2, "0")}:${time.getMinutes().toString().padStart(2, "0")}`;
-
-      msgElem.innerHTML = `<strong>${data.name}</strong>: ${data.text}
-        <span class="timestamp">${timeString}</span>`;
-
-      if (data.name === name) {
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "×";
-        delBtn.onclick = () => {
-          remove(child(messagesRef, msgId));
-          msgElem.remove();
-        };
-        msgElem.appendChild(delBtn);
-      }
-
+      const time = new Date(msg.timestamp);
+      const timeStr = `${time.getHours().toString().padStart(2, "0")}:${time.getMinutes().toString().padStart(2, "0")}`;
+      msgElem.innerHTML = `<strong>${msg.name}</strong>: ${msg.text}
+        <span class="timestamp">${timeStr}</span>`;
       chatBox.appendChild(msgElem);
       chatBox.scrollTop = chatBox.scrollHeight;
-    });
+    }
+
+    window.sendMessage = async () => {
+      const text = input.value.trim();
+      if (!text) return;
+
+      const res = await fetch("/.netlify/functions/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, text }),
+      });
+
+      if (res.ok) {
+        addMessage({ name, text, timestamp: new Date().toISOString() });
+        input.value = "";
+      } else {
+        alert("Message failed to send");
+      }
+    };
+
+    loadMessages();
   </script>
 </body>
 </html>
