@@ -1,4 +1,4 @@
-const { Client } = require('pg');
+const { Client } = require("pg");
 
 exports.handler = async (event) => {
   const email = event.queryStringParameters?.email;
@@ -23,7 +23,7 @@ exports.handler = async (event) => {
       return { statusCode: 404, body: "User not found" };
     }
   } catch (err) {
-    console.error("DB Error:", err);
+    console.error(err);
     return { statusCode: 500, body: "DB Error" };
   }
 };
