@@ -4,117 +4,78 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard | Neox</title>
-  <link rel="stylesheet" href="default.css"/>
   <style>
     body {
-      background: #0f0f0f;
+      background: radial-gradient(ellipse at center, #1a1a1a 0%, #0f0f0f 100%);
       color: #f1f1f1;
       font-family: Arial, sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    .profile {
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      text-align: center;
+      gap: 10px;
     }
 
-    .card {
-      background: #1f1f1f;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 255, 204, 0.15);
-      width: 90%;
-      max-width: 400px;
-    }
-
-    img.avatar {
-      width: 80px;
-      height: 80px;
+    .profile img {
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
-      margin-bottom: 1rem;
-      border: 2px solid #00ffcc;
+      object-fit: cover;
+      border: 3px solid #00ffcc;
+      box-shadow: 0 0 10px #00ffcc;
     }
 
-    h2 {
-      margin-bottom: 0.5rem;
-    }
-
-    .user-info {
-      font-size: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    button {
-      padding: 12px 24px;
+    .logout {
+      margin-top: 20px;
+      padding: 10px 20px;
       background: #00ffcc;
       border: none;
       color: black;
       font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s;
     }
 
-    button:hover {
+    .logout:hover {
       background: #00ddaa;
     }
   </style>
 </head>
 <body>
-
-  <div class="card" id="dashboard">
-    <img src="" alt="Avatar" class="avatar" id="avatar" />
-    <h2 id="username">Loading...</h2>
-    <div class="user-info" id="userEmail"></div>
-    <button onclick="logout()">Logout</button>
+  <div class="profile">
+    <img id="userPhoto" src="" alt="Profile Picture" />
+    <h2 id="userName">Welcome</h2>
+    <p id="userEmail"></p>
+    <button class="logout" onclick="logout()">Logout</button>
   </div>
 
   <script>
+    const name = localStorage.getItem("name");
     const email = localStorage.getItem("user");
-    const localName = localStorage.getItem("name");
+    const photo = localStorage.getItem("photo");
 
-    if (!email) {
+    if (!name || !email) {
       window.location.href = "login.html";
+    }
+
+    document.getElementById("userName").textContent = name;
+    document.getElementById("userEmail").textContent = email;
+
+    const photoElement = document.getElementById("userPhoto");
+    if (photo) {
+      photoElement.src = photo;
     } else {
-      document.getElementById("userEmail").innerText = "Email: " + email;
-
-      // Gravatar fallback avatar using dicebear
-      const seed = btoa(email).replace(/[^a-zA-Z0-9]/g, "").slice(0, 10);
-      document.getElementById("avatar").src = `https://api.dicebear.com/6.x/thumbs/svg?seed=${seed}`;
-
-      // Fetch name from Neon DB
-      fetch("/.netlify/functions/get-user", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.name) {
-          localStorage.setItem("name", data.name);
-          document.getElementById("username").innerText = `Welcome, ${data.name}`;
-        } else if (localName) {
-          document.getElementById("username").innerText = `Welcome, ${localName}`;
-        } else {
-          document.getElementById("username").innerText = `Welcome, user`;
-        }
-      })
-      .catch(() => {
-        if (localName) {
-          document.getElementById("username").innerText = `Welcome, ${localName}`;
-        } else {
-          document.getElementById("username").innerText = `Welcome, user`;
-        }
-      });
+      photoElement.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=00ffcc&color=000&bold=true`;
     }
 
     function logout() {
-      localStorage.removeItem("user");
-      localStorage.removeItem("name");
-      window.location.href = "/";
+      localStorage.clear();
+      window.location.href = "login.html";
     }
   </script>
-
 </body>
 </html>
