@@ -91,7 +91,7 @@
       if (data.success) {
         localStorage.setItem("user", email);
         localStorage.setItem("name", name);
-        window.location.href = "/";
+        window.location.href = "dashboard";
       } else {
         alert(data.error || "Signup failed");
       }
