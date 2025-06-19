@@ -54,6 +54,17 @@
       margin-left: 8px;
     }
 
+    .delete-btn {
+      position: absolute;
+      right: 10px;
+      top: 8px;
+      background: transparent;
+      border: none;
+      color: #ff4d4d;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
     .chat-input {
       display: flex;
       gap: 8px;
@@ -96,22 +107,32 @@
   </div>
 
   <script>
-    const name = localStorage.getItem("name");
     const user = localStorage.getItem("user");
+    if (!user) window.location.href = "login.html";
 
-    if (!name || !user) {
-      window.location.href = "login.html";
-    }
-
-    const welcomeText = document.getElementById("welcomeText");
-    welcomeText.textContent = `Welcome, ${name}`;
-
-    const input = document.getElementById("messageInput");
+    let name = "";
     const chatBox = document.getElementById("chatBox");
+    const input = document.getElementById("messageInput");
+
+    async function fetchUserName() {
+      try {
+        const res = await fetch(`/.netlify/functions/get-user-name?email=${encodeURIComponent(user)}`);
+        if (!res.ok) throw new Error("User not found");
+        const data = await res.json();
+        name = data.name;
+        document.getElementById("welcomeText").textContent = `Welcome, ${name}`;
+        loadMessages();
+      } catch (err) {
+        console.error(err);
+        alert("Failed to load user");
+        window.location.href = "login.html";
+      }
+    }
 
     async function loadMessages() {
       const res = await fetch("/.netlify/functions/chat");
       const messages = await res.json();
+      chatBox.innerHTML = "";
       messages.forEach(addMessage);
     }
 
@@ -120,8 +141,22 @@
       msgElem.className = "message";
 
       const time = new Date(msg.timestamp);
-      const timeStr = `${time.getHours().toString().padStart(2, "0")}:${time.getMinutes().toString().padStart(2, "0")}`;
+      const timeStr = time.toLocaleString();
+
       msgElem.innerHTML = `<strong>${msg.name}</strong>: ${msg.text} <span class="timestamp">${timeStr}</span>`;
+
+      if (msg.name === name) {
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "×";
+        delBtn.className = "delete-btn";
+        delBtn.onclick = async () => {
+          const res = await fetch(`/.netlify/functions/delete-message?id=${msg.id}`, { method: "DELETE" });
+          if (res.ok) msgElem.remove();
+          else alert("Failed to delete message");
+        };
+        msgElem.appendChild(delBtn);
+      }
+
       chatBox.appendChild(msgElem);
       chatBox.scrollTop = chatBox.scrollHeight;
     }
@@ -137,14 +172,15 @@
       });
 
       if (res.ok) {
-        addMessage({ name, text, timestamp: new Date().toISOString() });
+        const now = new Date().toISOString();
+        addMessage({ name, text, timestamp: now });
         input.value = "";
       } else {
         alert("Message failed to send.");
       }
     }
 
-    loadMessages();
+    fetchUserName();
   </script>
 </body>
 </html>
