@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard | Neox</title>
+  <link rel="stylesheet" href="default.css"/>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #f1f1f1;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+
+    .card {
+      background: #1f1f1f;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.15);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    img.avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+      border: 2px solid #00ffcc;
+    }
+
+    h2 {
+      margin-bottom: 0.5rem;
+    }
+
+    .user-info {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: #00ffcc;
+      border: none;
+      color: black;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #00ddaa;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="dashboard">
+    <img src="" alt="Avatar" class="avatar" id="avatar" />
+    <h2 id="username">Loading...</h2>
+    <div class="user-info" id="userEmail"></div>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    const email = localStorage.getItem("user");
+    const localName = localStorage.getItem("name");
+
+    if (!email) {
+      window.location.href = "login.html";
+    } else {
+      document.getElementById("userEmail").innerText = "Email: " + email;
+
+      // Gravatar fallback avatar using dicebear
+      const seed = btoa(email).replace(/[^a-zA-Z0-9]/g, "").slice(0, 10);
+      document.getElementById("avatar").src = `https://api.dicebear.com/6.x/thumbs/svg?seed=${seed}`;
+
+      // Fetch name from Neon DB
+      fetch("/.netlify/functions/get-user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.name) {
+          localStorage.setItem("name", data.name);
+          document.getElementById("username").innerText = `Welcome, ${data.name}`;
+        } else if (localName) {
+          document.getElementById("username").innerText = `Welcome, ${localName}`;
+        } else {
+          document.getElementById("username").innerText = `Welcome, user`;
+        }
+      })
+      .catch(() => {
+        if (localName) {
+          document.getElementById("username").innerText = `Welcome, ${localName}`;
+        } else {
+          document.getElementById("username").innerText = `Welcome, user`;
+        }
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem("user");
+      localStorage.removeItem("name");
+      window.location.href = "/";
+    }
+  </script>
+
+</body>
+</html>
