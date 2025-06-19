@@ -168,7 +168,6 @@
     <header>
       <h1>Neox</h1>
       <p>Welcome to my world!</p>
-<div id="status"></div>
       <a href="login" class="button-link">Sign Up</a><br><br>
     </header>
 
@@ -239,25 +238,5 @@
     <footer>
       <p>Made by Neox | 2025</p>
     </footer>
- <script>
-  const user = localStorage.getItem("user");
-
-  if (user) {
-    document.getElementById("status").innerHTML = `
-      <p>Welcome, <b>${user}</b></p>
-      <button onclick="logout()">Logout</button>
-    `;
-  } else {
-    document.getElementById("status").innerHTML = `
-      <a href="login.html"><button>Login</button></a>
-      <a href="register.html"><button>Register</button></a>
-    `;
-  }
-
-  function logout() {
-    localStorage.removeItem("user");
-    location.reload();
-  }
-</script>
  </body>
 </html>
