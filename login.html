@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login | Neox</title>
-  <link rel="stylesheet" href="default.css"/>
   <style>
     body {
       background: #0f0f0f;
@@ -15,6 +14,7 @@
       justify-content: center;
       height: 100vh;
     }
+
     .container {
       background: #1f1f1f;
       padding: 2rem;
@@ -24,6 +24,7 @@
       max-width: 400px;
       text-align: center;
     }
+
     input {
       width: 100%;
       padding: 12px;
@@ -33,6 +34,7 @@
       background-color: #2e2e2e;
       color: white;
     }
+
     button {
       padding: 12px 24px;
       background: #00ffcc;
@@ -41,12 +43,13 @@
       font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s;
       width: 100%;
     }
+
     button:hover {
       background: #00ddaa;
     }
+
     a {
       display: block;
       margin-top: 1rem;
@@ -56,7 +59,7 @@
   </style>
 </head>
 <body>
-  <div class="container" id="formContainer">
+  <div class="container">
     <h2>Login</h2>
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
@@ -67,19 +70,11 @@
   <script>
     const user = localStorage.getItem("user");
     if (user) {
-      document.getElementById("formContainer").innerHTML = `
-        <h2>Logged in as ${user}</h2>
-        <button onclick="logout()">Logout</button>
-      `;
-    }
-
-    function logout() {
-      localStorage.removeItem("user");
-      location.reload();
+      window.location.href = "dashboard.html";
     }
 
     async function login() {
-      const email = document.getElementById("email").value;
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
       const res = await fetch("/.netlify/functions/login", {
@@ -89,11 +84,12 @@
       });
 
       const data = await res.json();
-      if (data.login) {
+      if (data.success) {
         localStorage.setItem("user", email);
-        window.location.href = "dashboard";
+        localStorage.setItem("name", data.name);
+        window.location.href = "dashboard.html";
       } else {
-        alert("Login failed");
+        alert(data.error || "Login failed");
       }
     }
   </script>
