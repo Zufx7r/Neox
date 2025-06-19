@@ -1,21 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RRNV34VQPS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RRNV34VQPS');
-</script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Live Chat | Neox</title>
-  <link rel="stylesheet" href="default.css"/>
   <style>
     html, body {
       margin: 0;
@@ -79,12 +67,10 @@
 
     .chat-input {
       display: flex;
-      flex-direction: row;
       gap: 8px;
       padding: 10px;
       background-color: #1f1f1f;
       flex-shrink: 0;
-      box-sizing: border-box;
     }
 
     input[type="text"] {
@@ -110,23 +96,11 @@
     button.send-btn:hover {
       background-color: #00ddaa;
     }
-
-    @media (max-width: 600px) {
-      .chat-input {
-        flex-direction: row;
-        padding: 8px;
-      }
-
-      input[type="text"],
-      button.send-btn {
-        font-size: 1em;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="chat-container">
-    <div class="chat-header" id="welcomeText">Welcome</div>
+    <div class="chat-header" id="welcomeText">Loading...</div>
     <div class="chat-box" id="chatBox"></div>
     <div class="chat-input">
       <input type="text" id="messageInput" placeholder="Type your message..." />
@@ -163,21 +137,21 @@
     const input = document.getElementById("messageInput");
     const welcomeText = document.getElementById("welcomeText");
 
-    // Ask for name once
-    let userName = localStorage.getItem("chatName");
-    if (!userName) {
-      userName = prompt("Enter your name:");
-      if (!userName) userName = "Guest";
-      localStorage.setItem("chatName", userName);
+    const name = localStorage.getItem("name");
+    const user = localStorage.getItem("user");
+
+    if (!user || !name) {
+      window.location.href = "login.html";
     }
-    welcomeText.textContent = `Welcome, ${userName}`;
+
+    welcomeText.textContent = `Welcome, ${name}`;
 
     window.sendMessage = () => {
       const message = input.value.trim();
       if (!message) return;
 
       push(messagesRef, {
-        name: userName,
+        name,
         text: message,
         timestamp: Date.now()
       });
@@ -198,7 +172,7 @@
       msgElem.innerHTML = `<strong>${data.name}</strong>: ${data.text}
         <span class="timestamp">${timeString}</span>`;
 
-      if (data.name === userName) {
+      if (data.name === name) {
         const delBtn = document.createElement("button");
         delBtn.textContent = "×";
         delBtn.onclick = () => {
