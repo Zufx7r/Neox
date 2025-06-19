@@ -4,15 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login | Neox</title>
+  <link rel="stylesheet" href="default.css"/>
   <style>
     body {
-      background: #0f0f0f;
+      background: radial-gradient(ellipse at center, #1a1a1a 0%, #0f0f0f 100%);
       color: #f1f1f1;
       font-family: Arial, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
+      overflow: hidden;
     }
 
     .container {
@@ -43,6 +45,7 @@
       font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
+      transition: background 0.3s;
       width: 100%;
     }
 
@@ -68,13 +71,12 @@
   </div>
 
   <script>
-    const user = localStorage.getItem("user");
-    if (user) {
+    if (localStorage.getItem("user")) {
       window.location.href = "dashboard.html";
     }
 
     async function login() {
-      const email = document.getElementById("email").value.trim();
+      const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
 
       const res = await fetch("/.netlify/functions/login", {
@@ -83,13 +85,13 @@
         body: JSON.stringify({ email, password })
       });
 
-      const data = await res.json();
-      if (data.success) {
+      const result = await res.json();
+      if (result.success) {
         localStorage.setItem("user", email);
-        localStorage.setItem("name", data.name);
+        localStorage.setItem("name", result.name);
         window.location.href = "dashboard.html";
       } else {
-        alert(data.error || "Login failed");
+        alert("Login failed: " + (result.message || result.error));
       }
     }
   </script>
