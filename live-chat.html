@@ -130,20 +130,6 @@
     const timeStr = time.toLocaleString();
 
     msgElem.innerHTML = `<strong>${msg.name}</strong>: ${msg.text} <span class="timestamp">${timeStr}</span>`;
-
-    if (msg.name === name && msg.id) {
-      const delBtn = document.createElement("button");
-      delBtn.textContent = "×";
-      delBtn.onclick = async () => {
-        const res = await fetch(`/.netlify/functions/delete-message?id=${msg.id}`, {
-          method: "DELETE"
-        });
-        if (res.ok) msgElem.remove();
-        else alert("Failed to delete");
-      };
-      msgElem.appendChild(delBtn);
-    }
-
     chatBox.appendChild(msgElem);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
@@ -160,7 +146,7 @@
 
     const result = await res.json();
     if (res.ok) {
-      addMessage({ name, text, timestamp: new Date().toISOString(), id: result.id });
+      addMessage({ name, text, timestamp: new Date().toISOString() });
       input.value = "";
     } else {
       alert("Message failed to send");
