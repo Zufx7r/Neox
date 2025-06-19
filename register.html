@@ -58,6 +58,7 @@
 <body>
   <div class="container" id="formContainer">
     <h2>Register</h2>
+    <input type="text" id="name" placeholder="Your Name" required />
     <input type="email" id="email" placeholder="Email" required />
     <input type="password" id="password" placeholder="Password" required />
     <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
@@ -68,36 +69,28 @@
   <script>
     const user = localStorage.getItem("user");
     if (user) {
-      document.getElementById("formContainer").innerHTML = `
-        <h2>Logged in as ${user}</h2>
-        <button onclick="logout()">Logout</button>
-      `;
-    }
-
-    function logout() {
-      localStorage.removeItem("user");
-      location.reload();
+      window.location.href = "/";
     }
 
     async function register() {
-      const email = document.getElementById("email").value;
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
 
-      if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
-      }
+      if (!name || !email || !password) return alert("All fields required!");
+      if (password !== confirmPassword) return alert("Passwords do not match!");
 
       const res = await fetch("/.netlify/functions/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ name, email, password })
       });
 
       const data = await res.json();
       if (data.success) {
         localStorage.setItem("user", email);
+        localStorage.setItem("name", name);
         window.location.href = "/";
       } else {
         alert(data.error || "Signup failed");
