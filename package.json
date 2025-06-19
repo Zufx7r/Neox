@@ -1,9 +1,8 @@
 {
   "name": "neoxsite",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
   "dependencies": {
-    "@neondatabase/serverless": "^0.6.1"
+    "pg": "^8.11.3",
+    "@neondatabase/serverless": "^0.6.0"
   }
 }
