@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register | Neox</title>
-  <link rel="stylesheet" href="default.css"/>
   <style>
     body {
       background: #0f0f0f;
@@ -15,6 +14,7 @@
       justify-content: center;
       height: 100vh;
     }
+
     .container {
       background: #1f1f1f;
       padding: 2rem;
@@ -24,6 +24,7 @@
       max-width: 400px;
       text-align: center;
     }
+
     input {
       width: 100%;
       padding: 12px;
@@ -33,6 +34,7 @@
       background-color: #2e2e2e;
       color: white;
     }
+
     button {
       padding: 12px 24px;
       background: #00ffcc;
@@ -41,12 +43,13 @@
       font-weight: bold;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s;
       width: 100%;
     }
+
     button:hover {
       background: #00ddaa;
     }
+
     a {
       display: block;
       margin-top: 1rem;
@@ -56,7 +59,7 @@
   </style>
 </head>
 <body>
-  <div class="container" id="formContainer">
+  <div class="container">
     <h2>Register</h2>
     <input type="text" id="name" placeholder="Your Name" required />
     <input type="email" id="email" placeholder="Email" required />
@@ -69,7 +72,7 @@
   <script>
     const user = localStorage.getItem("user");
     if (user) {
-      window.location.href = "/";
+      window.location.href = "dashboard.html";
     }
 
     async function register() {
@@ -91,7 +94,7 @@
       if (data.success) {
         localStorage.setItem("user", email);
         localStorage.setItem("name", name);
-        window.location.href = "dashboard";
+        window.location.href = "dashboard.html";
       } else {
         alert(data.error || "Signup failed");
       }
