@@ -224,15 +224,38 @@
     <section style="--i:6;">
       <h2>Contact Me</h2>
       <p>Reach out via Discord, GitHub, or your favorite dev community!</p>
-      <form action="https://formsubmit.co/shoaibmamozai4@gmail.com" method="POST" style="max-width: 600px; margin: 0 auto;">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_autoresponse" value="Thanks for messaging me! I’ll reply as soon as I can.">
-        <input type="hidden" name="_next" value="https://neoxsite.netlify.app/thank-you">
-        <input type="text" name="name" placeholder="Your Name" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: none; border-radius: 5px; background-color: #2e2e2e; color: #ffffff;">
-        <input type="email" name="email" placeholder="Your Email" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: none; border-radius: 5px; background-color: #2e2e2e; color: #ffffff;">
-        <textarea name="message" placeholder="Your Message" required style="width: 100%; padding: 12px; margin-bottom: 20px; border: none; border-radius: 5px; background-color: #2e2e2e; color: #ffffff; height: 150px;"></textarea>
-        <button type="submit" style="background: none; border: none; color: #4CAF50; font-size: 1rem; font-weight: bold; cursor: pointer;">Send Message</button>
-      </form>
+<form id="contactForm" action="https://formsubmit.co/shoaibmamozai4@gmail.com" method="POST" style="max-width: 600px; margin: 0 auto;">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_autoresponse" value="Thanks for messaging me! I’ll reply as soon as I can.">
+  <input type="hidden" name="_next" value="https://neoxsite.netlify.app/thank-you">
+  
+  <!-- Hidden inputs for name and email -->
+  <input type="hidden" name="name" id="userName">
+  <input type="hidden" name="email" id="userEmail">
+
+  <textarea name="message" placeholder="Your Message" required
+    style="width: 100%; padding: 12px; margin-bottom: 20px; border: none; border-radius: 5px; background-color: #2e2e2e; color: #ffffff; height: 150px;"></textarea>
+
+  <button type="submit"
+    style="background: none; border: none; color: #4CAF50; font-size: 1rem; font-weight: bold; cursor: pointer;">
+    Send Message
+  </button>
+</form>
+
+<script>
+  const email = localStorage.getItem("user");
+  const name = localStorage.getItem("name");
+
+  // Block users not logged in
+  if (!email || !name) {
+    alert("Please log in to send a message.");
+    window.location.href = "login.html";
+  } else {
+    // Auto-fill name and email from localStorage
+    document.getElementById("userEmail").value = email;
+    document.getElementById("userName").value = name;
+  }
+</script>
     </section>
 
     <footer>
