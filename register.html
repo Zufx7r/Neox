@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -15,53 +14,52 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-    }
+    }.container {
+  background: #1f1f1f;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
 
-    .container {
-      background: #1f1f1f;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-    }
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+}
 
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 5px;
-      font-size: 1em;
-    }
+input {
+  background-color: #2e2e2e;
+  color: white;
+}
 
-    input {
-      background-color: #2e2e2e;
-      color: white;
-    }
+button {
+  background: #00ffcc;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    button {
-      background: #00ffcc;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-    }
+button:hover {
+  background: #00ddaa;
+}
 
-    button:hover {
-      background: #00ddaa;
-    }
+a {
+  display: block;
+  margin-top: 1rem;
+  color: #00ffcc;
+  text-decoration: none;
+}
 
-    a {
-      display: block;
-      margin-top: 1rem;
-      color: #00ffcc;
-      text-decoration: none;
-    }
+a:hover {
+  text-decoration: underline;
+}
 
-    a:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
@@ -73,13 +71,12 @@
     <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
     <button onclick="register()">Register</button>
     <a href="login.html">Already have an account? Login</a>
-  </div>
-
-  <script type="module">
+  </div>  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
     import {
       getAuth,
-      createUserWithEmailAndPassword
+      createUserWithEmailAndPassword,
+      sendEmailVerification
     } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
     const firebaseConfig = {
@@ -100,18 +97,30 @@
       const password = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
 
-      if (!name || !email || !password) return alert("Please fill in all fields.");
-      if (password !== confirmPassword) return alert("Passwords do not match.");
+      if (!name || !email || !password || !confirmPassword) {
+        return alert("Please fill in all fields.");
+      }
+
+      if (password !== confirmPassword) {
+        return alert("Passwords do not match.");
+      }
 
       try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        localStorage.setItem("name", name);
-        localStorage.setItem("user", email);
-        window.location.href = "dashboard.html";
+        await sendEmailVerification(userCredential.user);
+
+        // Save user to Neon
+        await fetch("/.netlify/functions/create-user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password })
+        });
+
+        alert("Verification email sent. Please check your inbox.");
+        window.location.href = "login.html";
       } catch (error) {
-        alert(error.message);
+        alert("Registration failed: " + error.message);
       }
     };
-  </script>
-</body>
+  </script></body>
 </html>
