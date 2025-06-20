@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -15,53 +14,52 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-    }
+    }.container {
+  background: #1f1f1f;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
 
-    .container {
-      background: #1f1f1f;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-    }
+input, button {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+}
 
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 5px;
-      font-size: 1em;
-    }
+input {
+  background-color: #2e2e2e;
+  color: white;
+}
 
-    input {
-      background-color: #2e2e2e;
-      color: white;
-    }
+button {
+  background: #00ffcc;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    button {
-      background: #00ffcc;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-    }
+button:hover {
+  background: #00ddaa;
+}
 
-    button:hover {
-      background: #00ddaa;
-    }
+a {
+  display: block;
+  margin-top: 1rem;
+  color: #00ffcc;
+  text-decoration: none;
+}
 
-    a {
-      display: block;
-      margin-top: 1rem;
-      color: #00ffcc;
-      text-decoration: none;
-    }
+a:hover {
+  text-decoration: underline;
+}
 
-    a:hover {
-      text-decoration: underline;
-    }
   </style>
 </head>
 <body>
@@ -71,40 +69,35 @@
     <input type="password" id="password" placeholder="Password" required />
     <button onclick="login()">Login</button>
     <a href="register.html">Don't have an account? Register</a>
-  </div>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import {
-      getAuth,
-      signInWithEmailAndPassword
-    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyC0w2CYNgPKciXQZ10h-vwnvW-8WmWiPdg",
-      authDomain: "loginpage-55633.firebaseapp.com",
-      projectId: "loginpage-55633",
-      storageBucket: "loginpage-55633.appspot.com",
-      messagingSenderId: "112787874903",
-      appId: "1:112787874903:web:54070d414ef38b7e40af12"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    window.login = async () => {
+  </div>  <script>
+    async function login() {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
+      if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+      }
+
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const response = await fetch("/.netlify/functions/login-user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Login failed");
+        }
+
         localStorage.setItem("user", email);
-        localStorage.setItem("name", userCredential.user.displayName || "User");
+        localStorage.setItem("name", data.name);
         window.location.href = "dashboard.html";
       } catch (error) {
         alert(error.message);
       }
-    };
-  </script>
-</body>
+    }
+  </script></body>
 </html>
