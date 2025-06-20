@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Email Verified | Neox</title>
+  <link rel="stylesheet" href="default.css"/>
+</head>
+<body>
+  <div class="container">
+    <h2>Email Verification</h2>
+    <p id="message">Verifying your email...</p>
+  </div>
+
+  <script>
+    const token = new URLSearchParams(window.location.search).get("token");
+
+    if (!token) {
+      document.getElementById("message").textContent = "Invalid verification link.";
+    } else {
+      fetch("/.netlify/functions/verify-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token })
+      })
+      .then(res => res.text())
+      .then(msg => {
+        document.getElementById("message").textContent = msg;
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById("message").textContent = "Verification failed. Try again.";
+      });
+    }
+  </script>
+</body>
+</html>
