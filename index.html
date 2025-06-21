@@ -230,20 +230,16 @@
   Reach out via Discord, GitHub, or your favorite dev community!
 </p>
 
-<form id="contactForm" action="https://formsubmit.co/shoaibmamozai4@gmail.com" method="POST" 
-  style="max-width: 600px; margin: 0 auto; display: none; padding: 0 20px;">
-  
-  <input type="hidden" name="_captcha" value="false">
-  <input type="hidden" name="_autoresponse" value="Thanks for messaging me! I’ll reply as soon as I can.">
-  <input type="hidden" name="_next" value="https://neoxsite.netlify.app/thank-you">
-
-  <!-- Hidden inputs for name and email -->
+<form action="https://formspree.io/f/xgvylqaq" method="POST" style="max-width: 600px; margin: 0 auto; padding: 0 20px;">
+  <!-- Hidden fields to include name/email from localStorage -->
   <input type="hidden" name="name" id="userName">
   <input type="hidden" name="email" id="userEmail">
 
+  <!-- Message field -->
   <textarea name="message" placeholder="Your Message" required
     style="width: 100%; padding: 12px; margin-bottom: 20px; border: none; border-radius: 5px; background-color: #2e2e2e; color: #ffffff; height: 150px;"></textarea>
 
+  <!-- Submit button -->
   <div style="text-align: center;">
     <button type="submit"
       style="background-color: #00ffcc; color: #000; border: none; border-radius: 8px; padding: 10px 24px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s;">
