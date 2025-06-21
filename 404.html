@@ -2,66 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>404 - Page Not Found | Neox</title>
   <link rel="stylesheet" href="default.css"/>
   <style>
     body {
-      background: #101010;
-      color: #f1f1f1;
-      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at top, #0f0f0f, #000);
+      color: #00ffee;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
       flex-direction: column;
+      height: 100vh;
       overflow: hidden;
+      text-align: center;
     }
 
     h1 {
-      font-size: 8rem;
+      font-size: 10rem;
       margin: 0;
-      animation: float 2s ease-in-out infinite;
+      font-weight: bold;
+      color: #00ffee;
+      text-shadow: 0 0 10px #00ffee, 0 0 30px #00ffee;
+      animation: float 2.5s ease-in-out infinite;
     }
 
     p {
-      font-size: 1.5rem;
-      margin: 0.5rem 0 2rem;
-      color: #aaa;
-      padding: 0 20px; /* Added padding */
-      text-align: center; /* Optional: center align for better appearance */
+      font-size: 1.3rem;
+      color: #bbb;
+      margin: 1rem 0 2.5rem;
+      padding: 0 20px;
     }
 
     a {
-      padding: 12px 24px;
-      background-color: #00ffcc;
+      display: inline-block;
+      padding: 12px 28px;
+      background: linear-gradient(90deg, #00ffee, #00ddaa);
       color: #000;
-      border-radius: 8px;
-      text-decoration: none;
+      border-radius: 12px;
       font-weight: bold;
-      transition: 0.3s;
+      text-decoration: none;
+      box-shadow: 0 0 10px #00ffee88;
+      transition: all 0.3s ease;
     }
 
     a:hover {
-      background-color: #00ddaa;
-      transform: scale(1.05);
+      transform: scale(1.07);
+      box-shadow: 0 0 20px #00ffeeaa;
     }
 
     @keyframes float {
       0%, 100% {
-        transform: translateY(0);
+        transform: translateY(0px);
       }
       50% {
-        transform: translateY(-10px);
+        transform: translateY(-12px);
       }
     }
   </style>
 </head>
 <body>
   <h1>404</h1>
-  <p>Oops! The page you're looking for doesn't exist.</p>
-  <a href="/">Go to Homepage</a>
+  <p>Oops! The page you're looking for doesn't exist on NeoxSite.</p>
+  <a href="/">Return to Home</a>
 </body>
 </html>
