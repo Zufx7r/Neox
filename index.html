@@ -230,25 +230,32 @@
   Reach out via Discord, GitHub, or your favorite dev community!
 </p>
 
-<<form action="https://formspree.io/f/xgvylqaq" method="POST" style="max-width: 600px; margin: 0 auto; padding: 0 20px;">
-  <!-- Redirect to custom page -->
-  <input type="hidden" name="_redirect" value="https://neoxsite.netlify.app/thank-you.html">
-
-  <!-- Hidden name/email from localStorage -->
-  <input type="hidden" name="name" id="userName">
-  <input type="hidden" name="email" id="userEmail">
-
-  <!-- Message field -->
-  <textarea name="message" placeholder="Your Message" required
-    style="width: 100%; padding: 12px; margin-bottom: 20px; border: none; border-radius: 5px; background-color: #2e2e2e; color: #ffffff; height: 150px;"></textarea>
-
-  <div style="text-align: center;">
-    <button type="submit"
-      style="background-color: #00ffcc; color: #000; border: none; border-radius: 8px; padding: 10px 24px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s;">
-      Send Message
-    </button>
-  </div>
+<form id="contactForm" action="https://formspree.io/f/xgvylqaq" method="POST">
+  <!-- your inputs -->
 </form>
+
+<script>
+  const form = document.getElementById("contactForm");
+  form.addEventListener("submit", function(e) {
+    e.preventDefault(); // Stop default behavior
+
+    const data = new FormData(form);
+
+    fetch(form.action, {
+      method: "POST",
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    }).then(response => {
+      if (response.ok) {
+        window.location.href = "https://neoxsite.netlify.app/thank-you";
+      } else {
+        alert("There was a problem submitting the form.");
+      }
+    }).catch(error => {
+      alert("Error: " + error);
+    });
+  });
+</script>
 
 <script>
   const email = localStorage.getItem("user");
