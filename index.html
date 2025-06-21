@@ -225,27 +225,22 @@
     </section>
 
     <section style="--i:6;">
-     <h2 style="text-align: center; color: #00ffee; margin-top: 2rem; font-size: 2.2rem;">Contact Me</h2>
-<p style="text-align: center; color: #aaa; margin-bottom: 2rem;">
-  Reach out via Discord, GitHub, or your favorite dev community!
-</p>
-
-<form id="contactForm" action="https://formsubmit.co/shoaibmamozai4@gmail.com" method="POST"
-  style="max-width: 600px; margin: 0 auto; display: none; padding: 20px; background-color: #1a1a1a; border-radius: 12px; box-shadow: 0 0 15px #00ffee44;">
-
+         <h2>Contact Me</h2>
+      <p>Reach out via Discord, GitHub, or your favorite dev community!</p>
+<form id="contactForm" action="https://formsubmit.co/shoaibmamozai4@gmail.com" method="POST" style="max-width: 600px; margin: 0 auto; display: none;">
   <input type="hidden" name="_captcha" value="false">
   <input type="hidden" name="_autoresponse" value="Thanks for messaging me! I’ll reply as soon as I can.">
   <input type="hidden" name="_next" value="https://neoxsite.netlify.app/thank-you">
 
-  <!-- Hidden user info -->
+  <!-- Hidden inputs for name and email -->
   <input type="hidden" name="name" id="userName">
   <input type="hidden" name="email" id="userEmail">
 
   <textarea name="message" placeholder="Your Message" required
-    style="width: 100%; padding: 14px; margin-bottom: 20px; border: none; border-radius: 8px; background-color: #2e2e2e; color: #fff; font-size: 1rem; resize: vertical; min-height: 120px;"></textarea>
+    style="width: 100%; padding: 12px; margin-bottom: 20px; border: none; border-radius: 5px; background-color: #2e2e2e; color: #ffffff; height: 150px;"></textarea>
 
   <button type="submit"
-    style="width: 100%; padding: 12px 0; background: linear-gradient(90deg, #00ffee, #00ddaa); color: #000; font-weight: bold; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; box-shadow: 0 0 10px #00ffee88; transition: 0.3s;">
+    style="background: none; border: none; color: #4CAF50; font-size: 1rem; font-weight: bold; cursor: pointer;">
     Send Message
   </button>
 </form>
