@@ -1,0 +1,22 @@
+<!-- verify.html -->
+<body>
+  <h2 id="status">Verifying...</h2>
+  <script>
+    const token = new URLSearchParams(location.search).get("token");
+
+    fetch("/.netlify/functions/confirmVerify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        document.getElementById("status").textContent = "Verified! Redirecting...";
+        window.location.href = `set-password.html?email=${data.email}`;
+      } else {
+        document.getElementById("status").textContent = "Verification failed.";
+      }
+    });
+  </script>
+</body>
