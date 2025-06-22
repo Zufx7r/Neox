@@ -1,17 +1,16 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
- 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RRNV34VQPS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRNV34VQPS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RRNV34VQPS');
+  </script>
 
-  gtag('config', 'G-RRNV34VQPS');
-</script>
-
- <meta charset="UTF-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login | Neox</title>
   <link rel="stylesheet" href="default.css"/>
@@ -25,68 +24,85 @@
       justify-content: center;
       height: 100vh;
       margin: 0;
-    }.container {
-  background: #1f1f1f;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-}
+    }
 
-input, button {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 5px;
-  font-size: 1em;
-}
+    .container {
+      background: #1f1f1f;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
 
-input {
-  background-color: #2e2e2e;
-  color: white;
-}
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+    }
 
-button {
-  background: #00ffcc;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-}
+    input {
+      background-color: #2e2e2e;
+      color: white;
+    }
 
-button:hover {
-  background: #00ddaa;
-}
+    button {
+      background: #00ffcc;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-a {
-  display: block;
-  margin-top: 1rem;
-  color: #00ffcc;
-  text-decoration: none;
-}
+    button:hover {
+      background: #00ddaa;
+    }
 
-a:hover {
-  text-decoration: underline;
-}
+    a {
+      display: block;
+      margin-top: 1rem;
+      color: #00ffcc;
+      text-decoration: none;
+    }
 
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Login</h2>
-    <input type="email" id="email" placeholder="Email" required />
+
+    <!-- Email field with HTML pattern validation -->
+    <input type="email" id="email" placeholder="Email" required
+           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+           title="Enter a valid email (e.g. example@mail.com)" />
+
     <input type="password" id="password" placeholder="Password" required />
     <button onclick="login()">Login</button>
     <a href="register.html">Don't have an account? Register</a>
-  </div>  <script>
+  </div>
+
+  <script>
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
     async function login() {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
 
       if (!email || !password) {
         alert("Please enter both email and password.");
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        alert("Please enter a valid email address.");
         return;
       }
 
@@ -110,5 +126,6 @@ a:hover {
         alert(error.message);
       }
     }
-  </script></body>
+  </script>
+</body>
 </html>
