@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RRNV34VQPS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRNV34VQPS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RRNV34VQPS');
+  </script>
 
-  gtag('config', 'G-RRNV34VQPS');
-</script>
-
-<meta charset="UTF-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Register | Neox</title>
   <link rel="stylesheet" href="default.css"/>
@@ -79,7 +77,12 @@
   <div class="container">
     <h2>Register</h2>
     <input type="text" id="name" placeholder="Your Name" required />
-    <input type="email" id="email" placeholder="Email" required />
+    
+    <!-- Email with pattern validation -->
+    <input type="email" id="email" placeholder="Email" required 
+           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+           title="Enter a valid email (e.g. example@mail.com)" />
+    
     <input type="password" id="password" placeholder="Password" required />
     <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
     <button onclick="register()">Register</button>
@@ -87,14 +90,30 @@
   </div>
 
   <script>
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
     async function register() {
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
 
-      if (!name || !email || !password) return alert("Please fill in all fields.");
-      if (password !== confirmPassword) return alert("Passwords do not match.");
+      if (!name || !email || !password || !confirmPassword) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
 
       try {
         const res = await fetch("/.netlify/functions/signup", {
