@@ -1,16 +1,22 @@
 const { Client } = require('pg');
 const bcrypt = require('bcryptjs');
 
+// Load env vars for local testing (optional)
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 exports.handler = async (event) => {
   const { username, password } = JSON.parse(event.body);
 
   const client = new Client({
-    connectionString: 'postgres://USER:PASSWORD@HOST:PORT/DATABASE',
+    connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
   });
 
   try {
     await client.connect();
+
     const res = await client.query('SELECT * FROM admins WHERE username = $1', [username]);
 
     if (res.rows.length === 0) {
@@ -26,6 +32,7 @@ exports.handler = async (event) => {
       return { statusCode: 401, body: 'Incorrect password' };
     }
   } catch (err) {
+    console.error('Login error:', err);
     return { statusCode: 500, body: 'Server error' };
   } finally {
     await client.end();
