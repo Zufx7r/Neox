@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Admin Login</title>
   <style>
     body {
       background: #0f172a;
       color: white;
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -16,73 +16,80 @@
       margin: 0;
     }
 
-    h2 {
-      margin-bottom: 20px;
-      font-size: 2rem;
-    }
-
     .login-box {
       background: #1e293b;
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      width: 300px;
     }
 
-    input {
-      width: 100%;
+    input, button {
       padding: 12px;
       margin: 10px 0;
-      border: none;
+      width: 100%;
       border-radius: 8px;
+      border: none;
       font-size: 1rem;
     }
 
     button {
-      width: 100%;
-      padding: 12px;
-      background-color: #3b82f6;
-      border: none;
-      border-radius: 8px;
+      background: #3b82f6;
       color: white;
-      font-size: 1rem;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: #2563eb;
+      background: #2563eb;
     }
 
     .error {
       color: red;
-      margin-top: 10px;
       text-align: center;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
   <h2>Admin Login</h2>
   <div class="login-box">
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
+    <input id="username" placeholder="Username" />
+    <input id="password" type="password" placeholder="Password" />
     <button onclick="login()">Login</button>
     <p class="error" id="error-msg"></p>
   </div>
 
   <script>
-    function login() {
+    async function login() {
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
+      const errorMsg = document.getElementById("error-msg");
+      errorMsg.textContent = "";
 
-      // ✅ Replace these with your actual credentials
-      const ADMIN_USER = "admin";
-      const ADMIN_PASS = "123456";
+      if (!username || !password) {
+        errorMsg.textContent = "Please enter both fields.";
+        return;
+      }
 
-      if (username === ADMIN_USER && password === ADMIN_PASS) {
-        // Save admin session to localStorage
-        localStorage.setItem("isAdmin", "true");
-        window.location.href = "admin-dashboard.html";
-      } else {
-        document.getElementById("error-msg").textContent = "Invalid credentials!";
+      try {
+        const res = await fetch('/.netlify/functions/verify-admin', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        if (res.ok) {
+          localStorage.setItem("isAdmin", "true");
+          window.location.href = "admin-dashboard.html";
+        } else {
+          const msg = await res.text();
+          errorMsg.textContent = msg || "Invalid credentials!";
+        }
+      } catch (err) {
+        errorMsg.textContent = "Server error. Try again.";
+        console.error("Login error:", err);
       }
     }
   </script>
