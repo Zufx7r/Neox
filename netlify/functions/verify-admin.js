@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 exports.handler = async (event) => {
   const { username, password } = JSON.parse(event.body);
 
+  console.log("Login attempt:", username, password);
+
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
@@ -12,26 +14,26 @@ exports.handler = async (event) => {
   try {
     await client.connect();
 
-    const res = await client.query('SELECT * FROM admins WHERE username = $1', [username]);
+    const result = await client.query('SELECT * FROM admins WHERE username = $1', [username]);
 
-    if (res.rows.length === 0) {
-      console.log("❌ Username not found");
+    if (result.rows.length === 0) {
+      console.log("❌ No user found.");
       return { statusCode: 401, body: 'Invalid username' };
     }
 
-    const user = res.rows[0];
-    console.log("✅ Found user:", user.username);
+    const user = result.rows[0];
+    console.log("✅ User found:", user.username);
 
-    const isValid = await bcrypt.compare(password, user.password);
-    console.log("🔐 Password match:", isValid);
+    const isMatch = await bcrypt.compare(password, user.password);
+    console.log("🔐 Password valid:", isMatch);
 
-    if (isValid) {
+    if (isMatch) {
       return { statusCode: 200, body: JSON.stringify({ success: true }) };
     } else {
       return { statusCode: 401, body: 'Incorrect password' };
     }
-  } catch (err) {
-    console.error('❗ Server error:', err);
+  } catch (error) {
+    console.error("Server error:", error);
     return { statusCode: 500, body: 'Server error' };
   } finally {
     await client.end();
