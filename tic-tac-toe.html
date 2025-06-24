@@ -1,127 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <title>Neox Tic Tac Toe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="default.css"/>
+  <style>
+    body {
+      background: #0a0a0a;
+      color: #f0f0f0;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RRNV34VQPS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    h1 {
+      margin-bottom: 20px;
+      font-size: 2rem;
+      animation: fadeIn 1s ease-out;
+    }
 
-  gtag('config', 'G-RRNV34VQPS');
-</script>
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 12px;
+      margin-top: 20px;
+      animation: zoomIn 0.8s ease-out;
+    }
 
-<meta charset="UTF-8">
-<title>Neox Tic Tac Toe</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="default.css"/> 
-<style>
-  body {
-    background: #0a0a0a;
-    color: #f0f0f0;
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    overflow: hidden;
-  }
+    .cell {
+      background: #1a1a1a;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-  h1 {
-    margin-bottom: 20px;
-    font-size: 2rem;
-    animation: fadeIn 1s ease-out;
-  }
+    .cell:hover {
+      background: #292929;
+      transform: scale(1.05);
+    }
 
-  #board {
-    display: grid;
-    grid-template-columns: repeat(3, 100px);
-    grid-template-rows: repeat(3, 100px);
-    gap: 12px;
-    margin-top: 20px;
-    animation: zoomIn 0.8s ease-out;
-  }
+    .cell:active {
+      background: #383838;
+      transform: scale(0.95);
+    }
 
-  .cell {
-    background: #1a1a1a;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    outline: none;
-    border: none;
-  }
-  .cell:hover {
-    background: #292929;
-    transform: scale(1.05);
-  }
-  .cell:active {
-    background: #383838;
-    transform: scale(0.95);
-  }
+    #message {
+      margin-top: 20px;
+      font-size: 1.5rem;
+      text-align: center;
+      animation: fadeIn 1.5s ease-out;
+    }
 
-  #message {
-    margin-top: 20px;
-    font-size: 1.5rem;
-    text-align: center;
-    animation: fadeIn 1.5s ease-out;
-  }
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background-color: rgba(0, 0, 0, 0.9);
+      padding: 30px;
+      border-radius: 10px;
+      color: white;
+      font-size: 1.2rem;
+      text-align: center;
+      transition: transform 0.4s ease;
+      z-index: 999;
+    }
 
-  .popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    background-color: rgba(0, 0, 0, 0.9);
-    padding: 30px;
-    border-radius: 10px;
-    color: white;
-    font-size: 1.2rem;
-    text-align: center;
-    transition: transform 0.4s ease;
-    z-index: 999;
-  }
+    .popup.active {
+      transform: translate(-50%, -50%) scale(1);
+    }
 
-  .popup.active {
-    transform: translate(-50%, -50%) scale(1);
-  }
+    .popup button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
 
-  .popup button {
-    margin-top: 15px;
-    padding: 10px 20px;
-    font-size: 1rem;
-    background: #333;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
+    .popup button:hover {
+      background: #444;
+    }
 
-  .popup button:hover {
-    background: #444;
-  }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px);}
-    to { opacity: 1; transform: translateY(0);}
-  }
-
-  @keyframes zoomIn {
-    from { opacity: 0; transform: scale(0.8);}
-    to { opacity: 1; transform: scale(1);}
-  }
-</style>
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.8);}
+      to { opacity: 1; transform: scale(1);}
+    }
+  </style>
 </head>
 <body>
 
 <h1>Neox Tic Tac Toe</h1>
-
 <div id="board"></div>
 <div id="message"></div>
 
@@ -131,158 +119,168 @@
 </div>
 
 <script>
-const boardElement = document.getElementById('board');
-const messageElement = document.getElementById('message');
-const popup = document.getElementById('popup');
-const popupMessage = document.getElementById('popupMessage');
+  const boardElement = document.getElementById('board');
+  const messageElement = document.getElementById('message');
+  const popup = document.getElementById('popup');
+  const popupMessage = document.getElementById('popupMessage');
 
-let board = ['', '', '', '', '', '', '', '', ''];
-let player = 'X';
-let bot = 'O';
-let gameOver = false;
+  let board = ['', '', '', '', '', '', '', '', ''];
+  let player = 'X';
+  let bot = 'O';
+  let gameOver = false;
+  let isPlayerTurn = true;
 
-function createBoard() {
-  boardElement.innerHTML = '';
-  board.forEach((cell, index) => {
-    const div = document.createElement('div');
-    div.classList.add('cell');
-    div.dataset.index = index;
-    div.addEventListener('click', playerMove, { passive: true });
-    boardElement.appendChild(div);
-  });
-}
-
-function playerMove(e) {
-  const idx = e.target.dataset.index;
-  if (board[idx] || gameOver) return;
-  board[idx] = player;
-  updateBoard();
-  if (checkWin(player)) {
-    endGame("You Win!", player);
-    return;
+  function createBoard() {
+    boardElement.innerHTML = '';
+    board.forEach((_, index) => {
+      const div = document.createElement('div');
+      div.classList.add('cell');
+      div.dataset.index = index;
+      div.addEventListener('click', handleCellClick);
+      boardElement.appendChild(div);
+    });
   }
-  if (board.every(cell => cell)) {
-    endGame("Draw!");
-    return;
+
+  function handleCellClick(e) {
+    const idx = e.target.dataset.index;
+
+    if (!isPlayerTurn || board[idx] || gameOver) return;
+
+    board[idx] = player;
+    updateBoard();
+
+    if (checkWin(player)) {
+      endGame("You Win!");
+      return;
+    }
+
+    if (board.every(cell => cell)) {
+      endGame("Draw!");
+      return;
+    }
+
+    isPlayerTurn = false;
+    setTimeout(botMove, 500);
   }
-  setTimeout(botMove, 400);
-}
 
-function botMove() {
-  if (gameOver) return;
-  let best = bestMove();
-  board[best] = bot;
-  updateBoard();
-  if (checkWin(bot)) {
-    endGame("Bot Wins!", bot);
-  } else if (board.every(cell => cell)) {
-    endGame("Draw!");
-  }
-}
+  function botMove() {
+    if (gameOver) return;
 
-function updateBoard() {
-  const cells = document.querySelectorAll('.cell');
-  cells.forEach((cell, index) => {
-    cell.textContent = board[index];
-  });
-}
+    const move = bestMove();
+    board[move] = bot;
+    updateBoard();
 
-function checkWin(currentPlayer) {
-  const wins = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8],
-    [0, 3, 6], [1, 4, 7], [2, 5, 8],
-    [0, 4, 8], [2, 4, 6]
-  ];
-  for (const comb of wins) {
-    if (comb.every(idx => board[idx] === currentPlayer)) {
-      highlightCells(comb);
-      return true;
+    if (checkWin(bot)) {
+      endGame("Bot Wins!");
+    } else if (board.every(cell => cell)) {
+      endGame("Draw!");
+    } else {
+      isPlayerTurn = true;
     }
   }
-  return false;
-}
 
-function highlightCells(comb) {
-  const cells = document.querySelectorAll('.cell');
-  comb.forEach(i => cells[i].style.backgroundColor = '#4CAF50');
-}
+  function updateBoard() {
+    document.querySelectorAll('.cell').forEach((cell, index) => {
+      cell.textContent = board[index];
+    });
+  }
 
-function endGame(msg, who) {
-  messageElement.textContent = msg;
-  gameOver = true;
-  popup.classList.add('active');
-  popupMessage.textContent = msg;
-}
+  function checkWin(current) {
+    const winPatterns = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
 
-function restart() {
-  board = ['', '', '', '', '', '', '', '', ''];
-  gameOver = false;
-  messageElement.textContent = '';
-  createBoard();
-  popup.classList.remove('active');
-}
-
-// -------- SUPER HARD BOT --------
-function bestMove() {
-  let bestScore = -Infinity;
-  let move;
-  for (let i = 0; i < board.length; i++) {
-    if (board[i] === '') {
-      board[i] = bot;
-      let score = minimax(board, 0, false);
-      board[i] = '';
-      if (score > bestScore) {
-        bestScore = score;
-        move = i;
+    for (const pattern of winPatterns) {
+      if (pattern.every(i => board[i] === current)) {
+        highlightCells(pattern);
+        return true;
       }
     }
+    return false;
   }
-  return move;
-}
 
-function minimax(newBoard, depth, isMaximizing) {
-  if (checkStaticWin(bot, newBoard)) return 10 - depth;
-  if (checkStaticWin(player, newBoard)) return depth - 10;
-  if (newBoard.every(cell => cell !== '')) return 0;
+  function highlightCells(indices) {
+    const cells = document.querySelectorAll('.cell');
+    indices.forEach(i => {
+      cells[i].style.backgroundColor = '#4CAF50';
+    });
+  }
 
-  if (isMaximizing) {
+  function endGame(msg) {
+    gameOver = true;
+    messageElement.textContent = msg;
+    popupMessage.textContent = msg;
+    popup.classList.add('active');
+  }
+
+  function restart() {
+    board = ['', '', '', '', '', '', '', '', ''];
+    gameOver = false;
+    isPlayerTurn = true;
+    messageElement.textContent = '';
+    popup.classList.remove('active');
+    createBoard();
+  }
+
+  function bestMove() {
     let bestScore = -Infinity;
-    for (let i = 0; i < newBoard.length; i++) {
-      if (newBoard[i] === '') {
-        newBoard[i] = bot;
-        let score = minimax(newBoard, depth + 1, false);
-        newBoard[i] = '';
-        bestScore = Math.max(score, bestScore);
+    let move;
+    for (let i = 0; i < board.length; i++) {
+      if (board[i] === '') {
+        board[i] = bot;
+        let score = minimax(board, 0, false);
+        board[i] = '';
+        if (score > bestScore) {
+          bestScore = score;
+          move = i;
+        }
       }
     }
-    return bestScore;
-  } else {
-    let bestScore = Infinity;
-    for (let i = 0; i < newBoard.length; i++) {
-      if (newBoard[i] === '') {
-        newBoard[i] = player;
-        let score = minimax(newBoard, depth + 1, true);
-        newBoard[i] = '';
-        bestScore = Math.min(score, bestScore);
-      }
-    }
-    return bestScore;
+    return move;
   }
-}
 
-function checkStaticWin(currentPlayer, currentBoard) {
-  const winCombos = [
-    [0,1,2],[3,4,5],[6,7,8],
-    [0,3,6],[1,4,7],[2,5,8],
-    [0,4,8],[2,4,6]
-  ];
-  return winCombos.some(comb => comb.every(i => currentBoard[i] === currentPlayer));
-}
+  function minimax(boardState, depth, isMax) {
+    if (checkStaticWin(bot, boardState)) return 10 - depth;
+    if (checkStaticWin(player, boardState)) return depth - 10;
+    if (boardState.every(cell => cell !== '')) return 0;
 
-createBoard();
+    if (isMax) {
+      let best = -Infinity;
+      for (let i = 0; i < 9; i++) {
+        if (boardState[i] === '') {
+          boardState[i] = bot;
+          best = Math.max(best, minimax(boardState, depth + 1, false));
+          boardState[i] = '';
+        }
+      }
+      return best;
+    } else {
+      let best = Infinity;
+      for (let i = 0; i < 9; i++) {
+        if (boardState[i] === '') {
+          boardState[i] = player;
+          best = Math.min(best, minimax(boardState, depth + 1, true));
+          boardState[i] = '';
+        }
+      }
+      return best;
+    }
+  }
+
+  function checkStaticWin(currentPlayer, boardCheck) {
+    const patterns = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
+    return patterns.some(pattern => pattern.every(i => boardCheck[i] === currentPlayer));
+  }
+
+  createBoard();
 </script>
 
 <a href="/" style="margin-top: 30px; color: #888; text-decoration: none;">← Back to Home</a>
-
 </body>
 </html>
