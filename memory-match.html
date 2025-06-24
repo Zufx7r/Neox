@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RRNV34VQPS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RRNV34VQPS');
-</script>
-
- <meta charset="UTF-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Memory Match Game</title>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRNV34VQPS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RRNV34VQPS');
+  </script>
+
+  <link rel="stylesheet" href="default.css"/>
+
   <style>
-    /* Neox Default Clean CSS */
     * {
       margin: 0;
       padding: 0;
@@ -32,22 +32,27 @@
       background-color: #0a0a0a;
       color: #f0f0f0;
       overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      transition: all 0.3s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
+      text-align: center;
     }
 
     h1 {
-      margin-top: 20px;
-      font-size: 2rem;
+      font-size: 2.3rem;
+      margin-top: 30px;
+    }
+
+    .greeting {
+      font-size: 1rem;
+      color: #aaa;
+      margin-top: 10px;
     }
 
     #game-board {
-      margin-top: 20px;
+      margin-top: 30px;
       display: grid;
       grid-template-columns: repeat(4, 80px);
       grid-gap: 15px;
@@ -64,13 +69,19 @@
       font-size: 30px;
       cursor: pointer;
       border-radius: 10px;
-      user-select: none;
       transition: 0.3s;
     }
 
     .card.flipped {
       background: #00ffcc;
       color: #111;
+    }
+
+    a {
+      margin-top: 40px;
+      font-size: 1rem;
+      text-decoration: none;
+      color: #888;
     }
 
     @media (max-width: 500px) {
@@ -89,62 +100,67 @@
 </head>
 <body>
 
-<h1>Memory Match</h1>
+<h1>🧠 Memory Match</h1>
+<div class="greeting" id="greeting">Hello, Guest!</div>
 <div id="game-board"></div>
 
 <script>
-const board = document.getElementById('game-board');
-const icons = ["🍎","🍌","🍒","🍇","🍉","🍋","🍍","🥝"];
-let cards = [...icons, ...icons];
-let flippedCards = [];
-let lockBoard = false;
+  // Show username or guest
+  const name = localStorage.getItem("name");
+  const user = localStorage.getItem("user");
+  const playerName = name && user ? name : "Guest";
+  document.getElementById("greeting").textContent = `Hello, ${playerName}!`;
 
-// Shuffle
-cards.sort(() => 0.5 - Math.random());
+  const board = document.getElementById('game-board');
+  const icons = ["🍎", "🍌", "🍒", "🍇", "🍉", "🍋", "🍍", "🥝"];
+  let cards = [...icons, ...icons];
+  let flippedCards = [];
+  let lockBoard = false;
 
-// Create cards
-cards.forEach(icon => {
-  const card = document.createElement('div');
-  card.classList.add('card');
-  card.dataset.icon = icon;
-  card.addEventListener('click', flipCard);
-  board.appendChild(card);
-});
+  // Shuffle cards
+  cards.sort(() => 0.5 - Math.random());
 
-function flipCard() {
-  if (lockBoard) return;
-  if (this.classList.contains('flipped')) return;
+  // Generate cards
+  cards.forEach(icon => {
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.dataset.icon = icon;
+    card.addEventListener('click', flipCard);
+    board.appendChild(card);
+  });
 
-  this.classList.add('flipped');
-  this.innerText = this.dataset.icon;
-  flippedCards.push(this);
+  function flipCard() {
+    if (lockBoard || this.classList.contains('flipped')) return;
 
-  if (flippedCards.length === 2) {
-    checkForMatch();
+    this.classList.add('flipped');
+    this.innerText = this.dataset.icon;
+    flippedCards.push(this);
+
+    if (flippedCards.length === 2) {
+      checkForMatch();
+    }
   }
-}
 
-function checkForMatch() {
-  lockBoard = true;
-  const [first, second] = flippedCards;
-  if (first.dataset.icon === second.dataset.icon) {
-    flippedCards = [];
-    lockBoard = false;
-  } else {
-    setTimeout(() => {
-      first.classList.remove('flipped');
-      second.classList.remove('flipped');
-      first.innerText = "";
-      second.innerText = "";
+  function checkForMatch() {
+    lockBoard = true;
+    const [first, second] = flippedCards;
+    if (first.dataset.icon === second.dataset.icon) {
       flippedCards = [];
       lockBoard = false;
-    }, 800);
+    } else {
+      setTimeout(() => {
+        first.classList.remove('flipped');
+        second.classList.remove('flipped');
+        first.innerText = "";
+        second.innerText = "";
+        flippedCards = [];
+        lockBoard = false;
+      }, 800);
+    }
   }
-}
 </script>
 
-<a href="/" <style> <div style="margin-top: 20px;">
-</div> </style>Back to Home</a>
+<a href="/">← Back to Home</a>
 
 </body>
-  </html>
+</html>
