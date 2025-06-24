@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Neox Color Clicker</title>
-<link rel="stylesheet" href="default.css"/> 
+  <link rel="stylesheet" href="default.css"/> 
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -156,29 +156,14 @@
   let gameOver = false;
   let playerName = "Guest";
 
-  const loggedInUser = localStorage.getItem("loggedInUser");
+  const name = localStorage.getItem("name");
+  const email = localStorage.getItem("user");
 
-  async function fetchUserName(email) {
-    try {
-      const response = await fetch('https://neoxsite.netlify.app/.netlify/functions/get-user-name', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-
-      const data = await response.json();
-      if (data.name) {
-        playerName = data.name;
-        document.getElementById("greeting").textContent = `Hello, ${playerName}!`;
-      }
-    } catch (err) {
-      console.error("Failed to fetch name from Neon:", err);
-    }
-  }
-
-  if (loggedInUser) {
-    const email = JSON.parse(loggedInUser).email;
-    fetchUserName(email);
+  if (name && email) {
+    playerName = name;
+    document.getElementById("greeting").textContent = `Hello, ${playerName}!`;
+  } else {
+    document.getElementById("greeting").textContent = `Hello, Guest!`;
   }
 
   function startGame() {
