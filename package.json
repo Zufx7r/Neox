@@ -4,6 +4,8 @@
   "dependencies": {
     "pg": "^8.11.3",
     "@neondatabase/serverless": "^0.6.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.3.1",
     "nodemailer": "^6.9.3"
   }
 }
