@@ -1,11 +1,6 @@
 const { Client } = require('pg');
 const bcrypt = require('bcryptjs');
 
-// Load env vars for local testing (optional)
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
-
 exports.handler = async (event) => {
   const { username, password } = JSON.parse(event.body);
 
@@ -20,11 +15,15 @@ exports.handler = async (event) => {
     const res = await client.query('SELECT * FROM admins WHERE username = $1', [username]);
 
     if (res.rows.length === 0) {
+      console.log("❌ Username not found");
       return { statusCode: 401, body: 'Invalid username' };
     }
 
     const user = res.rows[0];
+    console.log("✅ Found user:", user.username);
+
     const isValid = await bcrypt.compare(password, user.password);
+    console.log("🔐 Password match:", isValid);
 
     if (isValid) {
       return { statusCode: 200, body: JSON.stringify({ success: true }) };
@@ -32,7 +31,7 @@ exports.handler = async (event) => {
       return { statusCode: 401, body: 'Incorrect password' };
     }
   } catch (err) {
-    console.error('Login error:', err);
+    console.error('❗ Server error:', err);
     return { statusCode: 500, body: 'Server error' };
   } finally {
     await client.end();
