@@ -1,53 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RRNV34VQPS"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-RRNV34VQPS');
-</script>
-
- <link rel="stylesheet" href="default.css"/>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Neox Color Clicker</title>
+
   <style>
     body {
+      margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: #0a0a0a;
-      color: #ffffff;
-      height: 100vh;
+      background: radial-gradient(#0a0a0a 50%, #111 100%);
+      color: #fff;
       display: flex;
-      justify-content: center;
-      align-items: center;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
       overflow: hidden;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: pageFadeIn 1s forwards ease;
+      animation: fadeInPage 1s ease forwards;
     }
 
     h1 {
       font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    .greeting {
+      font-size: 1.2rem;
       margin-bottom: 20px;
-      animation: fadeIn 1s ease;
+      color: #aaa;
     }
 
     .score {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       margin-bottom: 10px;
     }
 
     .target-color {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
+      font-size: 1.6rem;
       font-weight: bold;
-      animation: fadeIn 1s ease;
+      color: #ffc107;
+      margin-bottom: 20px;
+      animation: pulse 1s infinite;
     }
 
     .color-grid {
@@ -55,14 +49,15 @@
       grid-template-columns: repeat(3, 100px);
       gap: 15px;
       justify-content: center;
+      margin-bottom: 20px;
     }
 
     .color-btn {
       width: 100px;
       height: 100px;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: transform 0.2s ease;
     }
 
     .color-btn:hover {
@@ -84,13 +79,14 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0);
-      background: #222;
+      background: #1a1a1a;
       padding: 30px;
-      border-radius: 10px;
+      border-radius: 12px;
       color: white;
       text-align: center;
-      transition: transform 0.3s ease;
       z-index: 10;
+      transition: transform 0.3s ease;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
     }
 
     .popup.active {
@@ -100,34 +96,41 @@
     .popup button {
       margin-top: 15px;
       padding: 10px 20px;
-      background: #555;
+      background: #333;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
     }
 
     .popup button:hover {
-      background: #777;
+      background: #444;
     }
 
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(-20px);}
-      to {opacity: 1; transform: translateY(0);}
+    a {
+      margin-top: 30px;
+      color: #888;
+      text-decoration: none;
+      font-size: 1rem;
     }
 
-    @keyframes pageFadeIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes fadeInPage {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
     }
   </style>
 </head>
 <body>
 
-<h1>Neox Color Clicker</h1>
-
+<h1>🎨 Neox Color Clicker</h1>
+<div class="greeting" id="greeting">Hello, Player!</div>
 <div class="score">Score: <span id="score">0</span></div>
 <div class="target-color" id="target-color">Click the WHITE!</div>
 
@@ -153,6 +156,18 @@
   let targetColor = '';
   let gameOver = false;
 
+  // Set player name
+  const nameKey = 'playerName';
+  let playerName = localStorage.getItem(nameKey);
+
+  if (!playerName) {
+    playerName = prompt("Enter your name:");
+    if (!playerName) playerName = "Player";
+    localStorage.setItem(nameKey, playerName);
+  }
+
+  document.getElementById("greeting").textContent = `Hello, ${playerName}!`;
+
   function startGame() {
     score = 0;
     gameOver = false;
@@ -168,7 +183,6 @@
 
   function checkColor(color) {
     if (gameOver) return;
-
     if (color === targetColor) {
       score++;
       document.getElementById('score').textContent = score;
@@ -180,7 +194,8 @@
 
   function endGame() {
     gameOver = true;
-    document.getElementById('popupMessage').textContent = `Game Over! Your final score is ${score}`;
+    document.getElementById('popupMessage').textContent =
+      `Oops ${playerName}! You scored ${score}.`;
     document.getElementById('popup').classList.add('active');
   }
 
@@ -192,8 +207,7 @@
   startGame();
 </script>
 
-<a href="/" <style> <div style="margin-top: 20px;">
-</div> </style>Back to Home</a>
+<a href="/">← Back to Home</a>
 
 </body>
 </html>
