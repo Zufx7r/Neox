@@ -1,120 +1,141 @@
-import { Button } from "@/components/ui/button" import { Card, CardContent } from "@/components/ui/card"
+<!DOCTYPE html><html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neox | About Me</title>
+    <link rel="icon" type="image/png" href="NeoxRounded.png" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+      body {
+        background: radial-gradient(ellipse at center, #1a1a1a 0%, #0f0f0f 100%);
+        animation: fadeIn 1.5s ease-in;
+        overflow-x: hidden;
+      }
+      .bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        pointer-events: none;
+        background: repeating-radial-gradient(circle at center, rgba(0, 255, 204, 0.05) 1px, transparent 10px);
+        animation: floatBg 30s linear infinite;
+      }
+      @keyframes floatBg {
+        from { background-position: 0 0; }
+        to { background-position: 1000px 1000px; }
+      }
+    </style>
+  </head>
+  <body class="text-white font-sans">
+    <div class="bg-animation"></div>
+    <header class="relative z-10 text-center py-10 shadow-md bg-gradient-to-r from-gray-900 to-gray-800">
+      <h1 class="text-4xl font-bold text-teal-400 drop-shadow-md">Neox</h1>
+      <p class="mt-2 text-gray-300">Welcome to my world!</p>
+      <a href="/dashboard" class="inline-block mt-4 px-4 py-2 bg-teal-400 text-black rounded font-bold hover:bg-teal-300">Dashboard</a>
+    </header><main class="relative z-10 max-w-3xl mx-auto p-6 space-y-12">
+  <section>
+    <h2 class="text-2xl text-teal-400 mb-4">About Me</h2>
+    <p>Hi, I'm Shoaib, a passionate creator with a strong love for gaming, creative coding, and exploring new ideas. I'm always building, experimenting, and bringing unique concepts to life.</p>
+  </section>
 
-export default function AboutMe() { const email = typeof window !== "undefined" ? localStorage.getItem("user") : null; const name = typeof window !== "undefined" ? localStorage.getItem("name") : null;
+  <section>
+    <h2 class="text-2xl text-teal-400 mb-4">Hobbies</h2>
+    <ul class="list-disc list-inside">
+      <li>Game development</li>
+      <li>Programming in Lua & Python</li>
+      <li>Making websites and tools</li>
+    </ul>
+  </section>
 
-const handleSubmit = async (e) => { e.preventDefault() const form = e.target const data = new FormData(form) try { const response = await fetch("https://formspree.io/f/xgvylqaq", { method: "POST", body: data, headers: { Accept: "application/json" }, }) if (response.ok) { window.location.href = "/thank-you" } else { alert("There was a problem submitting the form.") } } catch (err) { alert("Error: " + err.message) } }
+  <section>
+    <h2 class="text-2xl text-teal-400 mb-4">Skills</h2>
+    <ul class="list-disc list-inside">
+      <li>Lua (advanced-tier)</li>
+      <li>Castle visual scripting</li>
+      <li>Python programming</li>
+      <li>HTML, CSS, JavaScript</li>
+    </ul>
+  </section>
 
-return ( <div className="relative min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-6"> <div className="absolute inset-0 bg-[radial-gradient(circle,_rgba(0,255,204,0.05)_1px,_transparent_10px)] animate-[floatBg_30s_linear_infinite] z-0"></div>
+  <section>
+    <h2 class="text-2xl text-teal-400 mb-4">Projects</h2>
+    <p>I build fun and interactive projects. Check one out below:</p>
+    <div class="flex flex-wrap gap-4 mt-4">
+      <a href="https://s.castle.xyz/eiZ5mjaIyTXj" target="_blank" class="px-4 py-2 bg-teal-400 text-black rounded hover:bg-teal-300">My Castle Profile</a>
+      <a href="/Chatboom_1.0.apk" download class="px-4 py-2 bg-teal-400 text-black rounded hover:bg-teal-300">Download ChatBoom</a>
+    </div>
+  </section>
 
-<header className="relative z-10 text-center py-10 shadow-md bg-gradient-to-r from-gray-900 to-gray-800">
-    <h1 className="text-4xl font-bold text-teal-400 drop-shadow-md">Neox</h1>
-    <p className="mt-2 text-gray-300">Welcome to my world!</p>
-    <a href="/dashboard">
-      <Button className="mt-4">Dashboard</Button>
-    </a>
-  </header>
+  <section>
+    <h2 class="text-2xl text-teal-400 mb-4">Games</h2>
+    <p>Play simple games right inside my website! Click to start:</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+      <a href="tic-tac-toe" class="block text-center px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded">Play Tic-Tac-Toe</a>
+      <a href="memory-match" class="block text-center px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded">Play Memory Match</a>
+      <a href="color-clicker" class="block text-center px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded">Play Colors Clicker</a>
+      <a href="live-chat" class="block text-center px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded">Play Live Chat</a>
+    </div>
+  </section>
 
-  <main className="relative z-10 max-w-3xl mx-auto space-y-12 py-10">
-    <section>
-      <h2 className="text-2xl text-teal-400 mb-4">About Me</h2>
-      <p>
-        Hi, I'm Shoaib, a passionate creator with a strong love for gaming, creative
-        coding, and exploring new ideas. Whether you're curious about my work,
-        age, name, or anything else, feel free to ask — I'm an open book!
-      </p>
-    </section>
+  <section>
+    <h2 class="text-2xl text-teal-400 text-center mb-4">Contact Me</h2>
+    <p class="text-center text-gray-400 mb-4">Reach out via Discord, GitHub, or your favorite dev community!</p>
 
-    <section>
-      <h2 className="text-2xl text-teal-400 mb-4">Hobbies</h2>
-      <ul className="list-disc list-inside">
-        <li>Game development</li>
-        <li>Programming in Lua & Python</li>
-        <li>Making websites and tools</li>
-      </ul>
-    </section>
+    <div id="messageBox"></div>
 
-    <section>
-      <h2 className="text-2xl text-teal-400 mb-4">Skills</h2>
-      <ul className="list-disc list-inside">
-        <li>Lua (advanced-tier)</li>
-        <li>Castle visual scripting</li>
-        <li>Python programming</li>
-        <li>HTML, CSS, JavaScript</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2 className="text-2xl text-teal-400 mb-4">Projects</h2>
-      <p>I build fun and interactive projects. Check one out below:</p>
-      <div className="flex flex-wrap gap-4 mt-4">
-        <a href="https://s.castle.xyz/eiZ5mjaIyTXj" target="_blank">
-          <Button>My Castle Profile</Button>
-        </a>
-        <a href="/Chatboom_1.0.apk" download>
-          <Button>Download ChatBoom</Button>
-        </a>
+    <form id="contactForm" method="POST" action="https://formspree.io/f/xgvylqaq" class="space-y-4 max-w-xl mx-auto hidden">
+      <input type="hidden" name="Name" id="userName" />
+      <input type="hidden" name="Email" id="userEmail" />
+      <textarea name="Message" required placeholder="Your Message" class="w-full rounded p-3 bg-gray-800 text-white border border-gray-600" rows="6"></textarea>
+      <div class="text-center">
+        <button type="submit" class="px-6 py-2 bg-teal-400 text-black font-bold rounded hover:bg-teal-300">Send Message</button>
       </div>
-    </section>
+    </form>
 
-    <section>
-      <h2 className="text-2xl text-teal-400 mb-4">Games</h2>
-      <p>Play simple games right inside my website! Click to start:</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-        {[
-          { name: "Tic-Tac-Toe", path: "tic-tac-toe" },
-          { name: "Memory Match", path: "memory-match" },
-          { name: "Colors Clicker", path: "color-clicker" },
-          { name: "Live Chat", path: "live-chat" },
-        ].map((game) => (
-          <Card key={game.name} className="text-center">
-            <CardContent className="p-4">
-              <a href={`/${game.path}`}>
-                <Button>{`Play ${game.name}`}</Button>
-              </a>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </section>
+    <script>
+      const email = localStorage.getItem("user");
+      const name = localStorage.getItem("name");
+      const form = document.getElementById("contactForm");
 
-    <section>
-      <h2 className="text-2xl text-teal-400 mb-4 text-center">Contact Me</h2>
-      <p className="text-center text-gray-400 mb-4">
-        Reach out via Discord, GitHub, or your favorite dev community!
-      </p>
+      if (!email || !name) {
+        const message = document.createElement("p");
+        message.className = "text-red-500 text-center mb-4";
+        message.textContent = "You must be logged in to send a message.";
+        document.getElementById("messageBox").appendChild(message);
+      } else {
+        document.getElementById("userEmail").value = email;
+        document.getElementById("userName").value = name;
+        form.style.display = "block";
+      }
 
-      {!email || !name ? (
-        <p className="text-red-500 text-center">You must be logged in to send a message.</p>
-      ) : (
-        <form
-          id="contactForm"
-          method="POST"
-          onSubmit={handleSubmit}
-          className="space-y-4 max-w-xl mx-auto"
-        >
-          <input type="hidden" name="Name" value={name} />
-          <input type="hidden" name="Email" value={email} />
-          <textarea
-            name="Message"
-            required
-            placeholder="Your Message"
-            className="w-full rounded-md p-3 bg-gray-800 text-white border border-gray-600"
-            rows={6}
-          ></textarea>
-          <div className="text-center">
-            <Button type="submit">Send Message</Button>
-          </div>
-        </form>
-      )}
-    </section>
-  </main>
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        const data = new FormData(form);
+        fetch(form.action, {
+          method: "POST",
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        }).then(response => {
+          if (response.ok) {
+            window.location.href = "/thank-you";
+          } else {
+            alert("There was a problem submitting the form.");
+          }
+        }).catch(error => {
+          alert("Error: " + error.message);
+        });
+      });
+    </script>
+  </section>
+</main>
 
-  <footer className="relative z-10 text-center py-6 border-t border-gray-700 mt-12">
-    <p className="text-gray-500">
-      Made by Neox | 2025 | <a href="/privacy.html" className="text-sky-400">Privacy Policy</a>
-    </p>
-  </footer>
-</div>
+<footer class="relative z-10 text-center py-6 border-t border-gray-700 mt-12">
+  <p class="text-gray-500">
+    Made by Neox | 2025 | <a href="/privacy.html" class="text-sky-400">Privacy Policy</a>
+  </p>
+</footer>
 
-) }
-
+  </body>
+</html>
