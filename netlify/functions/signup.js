@@ -1,4 +1,5 @@
 const { Client } = require("pg");
+const bcrypt = require("bcryptjs");
 
 exports.handler = async (event) => {
   const { name, email, password } = JSON.parse(event.body);
@@ -18,18 +19,21 @@ exports.handler = async (event) => {
   try {
     await client.connect();
 
-    await client.query(
-      `CREATE TABLE IF NOT EXISTS users (
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         name TEXT,
         email TEXT UNIQUE,
         password TEXT
-      )`
-    );
+      )
+    `);
+
+    // 🔐 Hash password using bcryptjs
+    const hashedPassword = bcrypt.hashSync(password, 10);
 
     await client.query(
       `INSERT INTO users (name, email, password) VALUES ($1, $2, $3)`,
-      [name, email, password]
+      [name, email, hashedPassword]
     );
 
     return {
