@@ -1,5 +1,7 @@
 const { Client } = require("pg");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 
 exports.handler = async (event) => {
   let { name, email, password } = JSON.parse(event.body);
@@ -11,9 +13,9 @@ exports.handler = async (event) => {
     };
   }
 
-  email = email.toLowerCase(); // ✅ Normalize email
-
+  email = email.toLowerCase();
   const hashedPassword = bcrypt.hashSync(password, 10);
+  const token = crypto.randomBytes(32).toString("hex");
 
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
@@ -24,25 +26,32 @@ exports.handler = async (event) => {
     await client.connect();
 
     await client.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        name TEXT,
-        email TEXT UNIQUE,
-        password TEXT,
-        email_verified BOOLEAN DEFAULT FALSE,
-        verification_token TEXT
-      )
-    `);
+      INSERT INTO users (name, email, password, verification_token)
+      VALUES ($1, $2, $3, $4)
+    `, [name, email, hashedPassword, token]);
 
-    await client.query(
-      `INSERT INTO users (name, email, password)
-       VALUES ($1, $2, $3)`,
-      [name, email, hashedPassword]
-    );
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const verifyLink = `https://neoxsite.netlify.app/verify.html?token=${token}`;
+
+    await transporter.sendMail({
+      from: `"Neox Site" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Verify your email",
+      html: `<p>Hello ${name},</p>
+             <p>Click the link to verify your email:</p>
+             <a href="${verifyLink}">${verifyLink}</a>`,
+    });
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ success: true }),
+      body: JSON.stringify({ success: true, message: "Verification email sent." }),
     };
   } catch (err) {
     return {
