@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Email Verification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #0f172a;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+    }
+    .status {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h2>Email Verification</h2>
+  <div class="status" id="status">Verifying...</div>
+
+  <script>
+    const token = new URLSearchParams(window.location.search).get('token');
+
+    fetch(`/.netlify/functions/verify?token=${token}`)
+      .then(res => res.text())
+      .then(msg => {
+        document.getElementById('status').textContent = msg;
+      })
+      .catch(() => {
+        document.getElementById('status').textContent = "❌ Something went wrong.";
+      });
+  </script>
+</body>
+</html>
