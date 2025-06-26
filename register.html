@@ -1,142 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRNV34VQPS"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-RRNV34VQPS');
-  </script>
-
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Register | Neox</title>
-  <link rel="stylesheet" href="default.css"/>
-  <style>
-    body {
-      background: #101010;
-      color: #f1f1f1;
-      font-family: Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
-
-    .container {
-      background: #1f1f1f;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-    }
-
-    input, button {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 5px;
-      font-size: 1em;
-    }
-
-    input {
-      background-color: #2e2e2e;
-      color: white;
-    }
-
-    button {
-      background: #00ffcc;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #00ddaa;
-    }
-
-    a {
-      display: block;
-      margin-top: 1rem;
-      color: #00ffcc;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Register</h2>
-    <input type="text" id="name" placeholder="Your Name" required />
-    
-    <!-- Email with pattern validation -->
-    <input type="email" id="email" placeholder="Email" required 
-           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
-           title="Enter a valid email (e.g. example@mail.com)" />
-    
-    <input type="password" id="password" placeholder="Password" required />
-    <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
-    <button onclick="register()">Register</button>
-    <a href="login.html">Already have an account? Login</a>
-  </div>
-
-  <script>
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    async function register() {
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-
-      if (!name || !email || !password || !confirmPassword) {
-        alert("Please fill in all fields.");
-        return;
-      }
-
-      if (!isValidEmail(email)) {
-        alert("Please enter a valid email address.");
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
-      }
-
-      try {
-  const res = await fetch("/.netlify/functions/signup", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email, password })
-  });
-
-  const result = await res.json();
-
-  // 🔍 Force display full result on screen
-  document.body.innerHTML = `
-    <div style="padding:20px;color:#0f0;background:#000;font-family:monospace;">
-      <h2>Signup Function Result:</h2>
-      <pre>${JSON.stringify(result, null, 2)}</pre>
-    </div>`;
-} catch (err) {
-  // Show JS-level fetch error
-  document.body.innerHTML = `
-    <div style="padding:20px;color:#f00;background:#000;font-family:monospace;">
-      <h2>Fetch Error:</h2>
-      <pre>${err.message}</pre>
-    </div>`;
-}  </script>
-</body>
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <!-- Google tag (gtag.js) -->  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRNV34VQPS"></script>  
+  <script>  
+    window.dataLayer = window.dataLayer || [];  
+    function gtag(){dataLayer.push(arguments);}  
+    gtag('js', new Date());  
+    gtag('config', 'G-RRNV34VQPS');  
+  </script>  
+  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>  
+  <title>Register | Neox</title>  
+  <link rel="stylesheet" href="default.css"/>  
+  <style>  
+    body {  
+      background: #101010;  
+      color: #f1f1f1;  
+      font-family: Arial, sans-serif;  
+      display: flex;  
+      align-items: center;  
+      justify-content: center;  
+      height: 100vh;  
+      margin: 0;  
+    }  
+  
+    .container {  
+      background: #1f1f1f;  
+      padding: 2rem;  
+      border-radius: 10px;  
+      box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);  
+      width: 90%;  
+      max-width: 400px;  
+      text-align: center;  
+    }  
+  
+    input, button {  
+      width: 100%;  
+      padding: 12px;  
+      margin: 10px 0;  
+      border: none;  
+      border-radius: 5px;  
+      font-size: 1em;  
+    }  
+  
+    input {  
+      background-color: #2e2e2e;  
+      color: white;  
+    }  
+  
+    button {  
+      background: #00ffcc;  
+      color: black;  
+      font-weight: bold;  
+      cursor: pointer;  
+    }  
+  
+    button:hover {  
+      background: #00ddaa;  
+    }  
+  
+    a {  
+      display: block;  
+      margin-top: 1rem;  
+      color: #00ffcc;  
+      text-decoration: none;  
+    }  
+  
+    a:hover {  
+      text-decoration: underline;  
+    }  
+  </style>  
+</head>  
+<body>  
+  <div class="container">  
+    <h2>Register</h2>  
+    <input type="text" id="name" placeholder="Your Name" required />  
+  
+    <!-- Email with pattern validation -->  
+    <input type="email" id="email" placeholder="Email" required   
+           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"  
+           title="Enter a valid email (e.g. example@mail.com)" />  
+  
+    <input type="password" id="password" placeholder="Password" required />  
+    <input type="password" id="confirmPassword" placeholder="Confirm Password" required />  
+    <button onclick="register()">Register</button>  
+    <a href="login.html">Already have an account? Login</a>  
+  </div>  
+  
+  <script>  
+    function isValidEmail(email) {  
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);  
+    }  
+  
+    async function register() {  
+      const name = document.getElementById("name").value.trim();  
+      const email = document.getElementById("email").value.trim();  
+      const password = document.getElementById("password").value;  
+      const confirmPassword = document.getElementById("confirmPassword").value;  
+  
+      if (!name || !email || !password || !confirmPassword) {  
+        alert("Please fill in all fields.");  
+        return;  
+      }  
+  
+      if (!isValidEmail(email)) {  
+        alert("Please enter a valid email address.");  
+        return;  
+      }  
+  
+      if (password !== confirmPassword) {  
+        alert("Passwords do not match.");  
+        return;  
+      }  
+  
+      try {  
+        const res = await fetch("/.netlify/functions/signup", {  
+          method: "POST",  
+          headers: { "Content-Type": "application/json" },  
+          body: JSON.stringify({ name, email, password })  
+        });  
+  
+        const result = await res.json();  
+  
+        if (res.ok && result.success) {  
+          localStorage.setItem("name", name);  
+          localStorage.setItem("user", email);  
+          window.location.href = "dashboard.html";  
+        } else {  
+          alert(result.error || "Registration failed.");  
+        }  
+      } catch (err) {  
+        alert("Error: " + err.message);  
+      }  
+    }  
+  </script>  
+</body>  
 </html>
