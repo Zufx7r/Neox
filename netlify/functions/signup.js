@@ -2,7 +2,7 @@ const { Client } = require("pg");
 const bcrypt = require("bcryptjs");
 
 exports.handler = async (event) => {
-  const { name, email, password } = JSON.parse(event.body);
+  let { name, email, password } = JSON.parse(event.body);
 
   if (!name || !email || !password) {
     return {
@@ -10,6 +10,10 @@ exports.handler = async (event) => {
       body: JSON.stringify({ error: "Missing required fields." }),
     };
   }
+
+  email = email.toLowerCase(); // ✅ Normalize email
+
+  const hashedPassword = bcrypt.hashSync(password, 10);
 
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
@@ -24,15 +28,15 @@ exports.handler = async (event) => {
         id SERIAL PRIMARY KEY,
         name TEXT,
         email TEXT UNIQUE,
-        password TEXT
+        password TEXT,
+        email_verified BOOLEAN DEFAULT FALSE,
+        verification_token TEXT
       )
     `);
 
-    // 🔐 Hash password using bcryptjs
-    const hashedPassword = bcrypt.hashSync(password, 10);
-
     await client.query(
-      `INSERT INTO users (name, email, password) VALUES ($1, $2, $3)`,
+      `INSERT INTO users (name, email, password)
+       VALUES ($1, $2, $3)`,
       [name, email, hashedPassword]
     );
 
