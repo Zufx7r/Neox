@@ -3,6 +3,8 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
+exports.handler = async (event) => {
+ 
 return {
   statusCode: 200,
   body: JSON.stringify({
@@ -10,8 +12,8 @@ return {
     email_pass: process.env.EMAIL_PASS ? "Exists ✅" : "Missing ❌"
   }),
 };
-exports.handler = async (event) => {
-  let { name, email, password } = JSON.parse(event.body);
+
+ let { name, email, password } = JSON.parse(event.body);
 
   if (!name || !email || !password) {
     return {
