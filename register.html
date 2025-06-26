@@ -116,26 +116,27 @@
       }
 
       try {
-        const res = await fetch("/.netlify/functions/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password })
-        });
+  const res = await fetch("/.netlify/functions/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password })
+  });
 
-        const result = await res.json();
+  const result = await res.json();
 
-        if (res.ok && result.success) {
-          localStorage.setItem("name", name);
-          localStorage.setItem("user", email);
-          window.location.href = "dashboard.html";
-        } else {
-          console.log("Full response:", result);
-alert("Error: " + (result.error || "Registration failed."));
-        }
-      } catch (err) {
-        alert("Error: " + err.message);
-      }
-    }
-  </script>
+  // 🔍 Force display full result on screen
+  document.body.innerHTML = `
+    <div style="padding:20px;color:#0f0;background:#000;font-family:monospace;">
+      <h2>Signup Function Result:</h2>
+      <pre>${JSON.stringify(result, null, 2)}</pre>
+    </div>`;
+} catch (err) {
+  // Show JS-level fetch error
+  document.body.innerHTML = `
+    <div style="padding:20px;color:#f00;background:#000;font-family:monospace;">
+      <h2>Fetch Error:</h2>
+      <pre>${err.message}</pre>
+    </div>`;
+}  </script>
 </body>
 </html>
