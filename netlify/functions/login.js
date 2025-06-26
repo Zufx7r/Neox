@@ -10,7 +10,7 @@ exports.handler = async (event) => {
   }
 
   let { email, password } = JSON.parse(event.body);
-  email = email.toLowerCase(); // ✅ Normalize email input
+  email = email.toLowerCase();
 
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
@@ -21,7 +21,7 @@ exports.handler = async (event) => {
     await client.connect();
 
     const result = await client.query(
-      "SELECT name, password FROM users WHERE email = $1",
+      "SELECT name, password, email_verified FROM users WHERE email = $1",
       [email]
     );
 
@@ -29,6 +29,18 @@ exports.handler = async (event) => {
 
     if (result.rows.length === 1) {
       const user = result.rows[0];
+
+      // Block if not verified
+      if (!user.email_verified) {
+        return {
+          statusCode: 403,
+          body: JSON.stringify({
+            success: false,
+            message: "Please verify your email before logging in.",
+          }),
+        };
+      }
+
       const isMatch = bcrypt.compareSync(password, user.password);
 
       if (isMatch) {
@@ -41,10 +53,9 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 401,
-      body: JSON.stringify({ success: false, message: "Invalid email or password" }),
+      body: JSON.stringify({ success: false, message: "Invalid email or password." }),
     };
   } catch (err) {
-    console.error("Login error:", err);
     return {
       statusCode: 500,
       body: JSON.stringify({ success: false, error: "Server error" }),
