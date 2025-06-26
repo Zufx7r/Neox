@@ -129,7 +129,8 @@
           localStorage.setItem("user", email);
           window.location.href = "dashboard.html";
         } else {
-          alert(result.error || "Registration failed.");
+          console.log("Full response:", result);
+alert("Error: " + (result.error || "Registration failed."));
         }
       } catch (err) {
         alert("Error: " + err.message);
