@@ -9,7 +9,8 @@ exports.handler = async (event) => {
     };
   }
 
-  const { email, password } = JSON.parse(event.body);
+  let { email, password } = JSON.parse(event.body);
+  email = email.toLowerCase(); // ✅ Normalize email input
 
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
@@ -28,8 +29,6 @@ exports.handler = async (event) => {
 
     if (result.rows.length === 1) {
       const user = result.rows[0];
-
-      // 🔐 Compare password with hash using bcryptjs
       const isMatch = bcrypt.compareSync(password, user.password);
 
       if (isMatch) {
