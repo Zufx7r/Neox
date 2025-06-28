@@ -24,6 +24,20 @@
       animation: fadeIn 1s ease-out;
     }
 
+    #controls {
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    select {
+      background: #1a1a1a;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      margin: 0 5px;
+    }
+
     #board {
       display: grid;
       grid-template-columns: repeat(3, 100px);
@@ -110,6 +124,24 @@
 <body>
 
 <h1>Neox Tic Tac Toe</h1>
+
+<div id="controls">
+  <label for="difficulty">Difficulty:</label>
+  <select id="difficulty" onchange="onDifficultyChange()">
+    <option value="easy">Easy</option>
+    <option value="hard">Hard</option>
+    <option value="impossible">Impossible</option>
+  </select>
+
+  <span id="whoGoesFirstContainer" style="display: none;">
+    <label for="whoGoesFirst">You go first?</label>
+    <select id="whoGoesFirst" onchange="setFirstTurn()">
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+  </span>
+</div>
+
 <div id="board"></div>
 <div id="message"></div>
 
@@ -130,6 +162,9 @@
   let gameOver = false;
   let isPlayerTurn = true;
 
+  let difficulty = 'easy';
+  let firstTurn = 'yes';
+
   function createBoard() {
     boardElement.innerHTML = '';
     board.forEach((_, index) => {
@@ -139,6 +174,23 @@
       div.addEventListener('click', handleCellClick);
       boardElement.appendChild(div);
     });
+  }
+
+  function onDifficultyChange() {
+    difficulty = document.getElementById('difficulty').value;
+    const whoGoesFirstContainer = document.getElementById('whoGoesFirstContainer');
+    if (difficulty === 'impossible') {
+      whoGoesFirstContainer.style.display = 'inline';
+    } else {
+      whoGoesFirstContainer.style.display = 'none';
+    }
+    restart();
+  }
+
+  function setFirstTurn() {
+    firstTurn = document.getElementById('whoGoesFirst').value;
+    isPlayerTurn = (firstTurn === 'yes');
+    restart();
   }
 
   function handleCellClick(e) {
@@ -166,7 +218,23 @@
   function botMove() {
     if (gameOver) return;
 
-    const move = bestMove();
+    let move;
+
+    if (difficulty === 'easy') {
+      const available = board.map((v, i) => v === '' ? i : null).filter(i => i !== null);
+      move = available[Math.floor(Math.random() * available.length)];
+    } else if (difficulty === 'hard') {
+      const useMinimax = Math.random() > 0.5;
+      if (useMinimax) {
+        move = bestMove();
+      } else {
+        const available = board.map((v, i) => v === '' ? i : null).filter(i => i !== null);
+        move = available[Math.floor(Math.random() * available.length)];
+      }
+    } else {
+      move = bestMove();
+    }
+
     board[move] = bot;
     updateBoard();
 
@@ -218,10 +286,16 @@
   function restart() {
     board = ['', '', '', '', '', '', '', '', ''];
     gameOver = false;
-    isPlayerTurn = true;
     messageElement.textContent = '';
     popup.classList.remove('active');
+
+    isPlayerTurn = (difficulty === 'impossible') ? (document.getElementById('whoGoesFirst').value === 'yes') : true;
+
     createBoard();
+
+    if (!isPlayerTurn) {
+      setTimeout(botMove, 500);
+    }
   }
 
   function bestMove() {
