@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Neox Tic Tac Toe</title>
@@ -17,36 +16,29 @@
       height: 100vh;
       overflow: hidden;
     }
-
     h1 {
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       font-size: 2rem;
-      animation: fadeIn 1s ease-out;
     }
-
     #controls {
       margin-bottom: 10px;
       text-align: center;
     }
-
     select {
       background: #1a1a1a;
       color: white;
       padding: 5px 10px;
       border: none;
       border-radius: 5px;
-      margin: 0 5px;
+      margin: 5px;
     }
-
     #board {
       display: grid;
       grid-template-columns: repeat(3, 100px);
       grid-template-rows: repeat(3, 100px);
       gap: 12px;
       margin-top: 20px;
-      animation: zoomIn 0.8s ease-out;
     }
-
     .cell {
       background: #1a1a1a;
       border-radius: 12px;
@@ -57,24 +49,22 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-
     .cell:hover {
       background: #292929;
       transform: scale(1.05);
     }
-
-    .cell:active {
-      background: #383838;
-      transform: scale(0.95);
+    .cell.bounce {
+      animation: bounce 0.6s ease;
     }
-
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.5); }
+    }
     #message {
-      margin-top: 20px;
+      margin-top: 10px;
       font-size: 1.5rem;
       text-align: center;
-      animation: fadeIn 1.5s ease-out;
     }
-
     .popup {
       position: fixed;
       top: 50%;
@@ -89,11 +79,9 @@
       transition: transform 0.4s ease;
       z-index: 999;
     }
-
     .popup.active {
       transform: translate(-50%, -50%) scale(1);
     }
-
     .popup button {
       margin-top: 15px;
       padding: 10px 20px;
@@ -103,258 +91,192 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s;
     }
-
     .popup button:hover {
       background: #444;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px);}
-      to { opacity: 1; transform: translateY(0);}
-    }
-
-    @keyframes zoomIn {
-      from { opacity: 0; transform: scale(0.8);}
-      to { opacity: 1; transform: scale(1);}
-    }
   </style>
 </head>
-<body>
+<body><h1>Neox Tic Tac Toe</h1><div id="controls">
+  <label>Mode:</label>
+  <select id="gameMode" onchange="restart()">
+    <option value="single">Single Player</option>
+    <option value="two">2 Player</option>
+  </select><label>Difficulty:</label> <select id="difficulty" onchange="onDifficultyChange()"> <option value="easy">Easy</option> <option value="hard">Hard</option> <option value="impossible">Impossible</option> </select>
 
-<h1>Neox Tic Tac Toe</h1>
-
-<div id="controls">
-  <label for="difficulty">Difficulty:</label>
-  <select id="difficulty" onchange="onDifficultyChange()">
-    <option value="easy">Easy</option>
-    <option value="hard">Hard</option>
-    <option value="impossible">Impossible</option>
-  </select>
-
-  <span id="whoGoesFirstContainer" style="display: none;">
-    <label for="whoGoesFirst">You go first?</label>
-    <select id="whoGoesFirst" onchange="setFirstTurn()">
+  <span id="whoGoesFirstContainer" style="display:none;">
+    <label>You first?</label>
+    <select id="whoGoesFirst" onchange="restart()">
       <option value="yes">Yes</option>
       <option value="no">No</option>
     </select>
   </span>
-</div>
-
-<div id="board"></div>
+</div><div id="board"></div>
 <div id="message"></div>
-
-<div class="popup" id="popup">
+<div id="highScore"></div><div class="popup" id="popup">
   <p id="popupMessage"></p>
   <button onclick="restart()">Play Again</button>
-</div>
+</div><audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_e832e3fc03.mp3?filename=button-124476.mp3"></audio> <audio id="winSound" src="https://cdn.pixabay.com/download/audio/2022/03/23/audio_b81776d196.mp3?filename=success-fanfare-trumpets-6185.mp3"></audio> <audio id="drawSound" src="https://cdn.pixabay.com/download/audio/2022/02/17/audio_234b9a902e.mp3?filename=error-126627.mp3"></audio>
 
 <script>
-  const boardElement = document.getElementById('board');
-  const messageElement = document.getElementById('message');
-  const popup = document.getElementById('popup');
-  const popupMessage = document.getElementById('popupMessage');
+const boardElement = document.getElementById('board');
+const messageElement = document.getElementById('message');
+const popup = document.getElementById('popup');
+const popupMessage = document.getElementById('popupMessage');
+const clickSound = document.getElementById('clickSound');
+const winSound = document.getElementById('winSound');
+const drawSound = document.getElementById('drawSound');
+const highScoreElement = document.getElementById('highScore');
 
-  let board = ['', '', '', '', '', '', '', '', ''];
-  let player = 'X';
-  let bot = 'O';
-  let gameOver = false;
-  let isPlayerTurn = true;
+let board = Array(9).fill('');
+let player = 'X';
+let bot = 'O';
+let gameOver = false;
+let isPlayerTurn = true;
 
-  let difficulty = 'easy';
-  let firstTurn = 'yes';
+let difficulty = 'easy';
+let firstTurn = 'yes';
+let gameMode = 'single';
+let turnCount = 0;
 
-  function createBoard() {
-    boardElement.innerHTML = '';
-    board.forEach((_, index) => {
-      const div = document.createElement('div');
-      div.classList.add('cell');
-      div.dataset.index = index;
-      div.addEventListener('click', handleCellClick);
-      boardElement.appendChild(div);
-    });
+function createBoard() {
+  boardElement.innerHTML = '';
+  board.forEach((_, index) => {
+    const div = document.createElement('div');
+    div.classList.add('cell');
+    div.dataset.index = index;
+    div.addEventListener('click', handleCellClick);
+    boardElement.appendChild(div);
+  });
+}
+
+function handleCellClick(e) {
+  const idx = e.target.dataset.index;
+  if (board[idx] || gameOver) return;
+  clickSound.play();
+  board[idx] = isPlayerTurn ? player : bot;
+  updateBoard();
+  if (checkWin(board[idx])) return endGame((board[idx] === player ? 'Player 1' : 'Player 2') + ' Wins!');
+  if (board.every(cell => cell)) return endGame("It's a Draw!");
+
+  if (gameMode === 'two') {
+    isPlayerTurn = !isPlayerTurn;
+    return;
   }
 
-  function onDifficultyChange() {
-    difficulty = document.getElementById('difficulty').value;
-    const whoGoesFirstContainer = document.getElementById('whoGoesFirstContainer');
-    if (difficulty === 'impossible') {
-      whoGoesFirstContainer.style.display = 'inline';
-    } else {
-      whoGoesFirstContainer.style.display = 'none';
-    }
-    restart();
-  }
+  isPlayerTurn = false;
+  setTimeout(botMove, 400);
+}
 
-  function setFirstTurn() {
-    firstTurn = document.getElementById('whoGoesFirst').value;
-    isPlayerTurn = (firstTurn === 'yes');
-    restart();
-  }
+function botMove() {
+  if (gameOver || gameMode !== 'single') return;
+  let move;
+  if (difficulty === 'easy') move = randomMove();
+  else if (difficulty === 'hard') move = Math.random() < 0.5 ? bestMove() : randomMove();
+  else move = bestMove();
 
-  function handleCellClick(e) {
-    const idx = e.target.dataset.index;
+  board[move] = bot;
+  updateBoard();
+  clickSound.play();
+  if (checkWin(bot)) return endGame("Bot Wins!");
+  if (board.every(cell => cell)) return endGame("Draw!");
+  isPlayerTurn = true;
+}
 
-    if (!isPlayerTurn || board[idx] || gameOver) return;
+function randomMove() {
+  const available = board.map((v, i) => v === '' ? i : null).filter(i => i !== null);
+  return available[Math.floor(Math.random() * available.length)];
+}
 
-    board[idx] = player;
-    updateBoard();
+function updateBoard() {
+  document.querySelectorAll('.cell').forEach((cell, index) => {
+    cell.textContent = board[index];
+  });
+}
 
-    if (checkWin(player)) {
-      endGame("You Win!");
-      return;
-    }
-
-    if (board.every(cell => cell)) {
-      endGame("Draw!");
-      return;
-    }
-
-    isPlayerTurn = false;
-    setTimeout(botMove, 500);
-  }
-
-  function botMove() {
-    if (gameOver) return;
-
-    let move;
-
-    if (difficulty === 'easy') {
-      const available = board.map((v, i) => v === '' ? i : null).filter(i => i !== null);
-      move = available[Math.floor(Math.random() * available.length)];
-    } else if (difficulty === 'hard') {
-      const useMinimax = Math.random() > 0.5;
-      if (useMinimax) {
-        move = bestMove();
-      } else {
-        const available = board.map((v, i) => v === '' ? i : null).filter(i => i !== null);
-        move = available[Math.floor(Math.random() * available.length)];
-      }
-    } else {
-      move = bestMove();
-    }
-
-    board[move] = bot;
-    updateBoard();
-
-    if (checkWin(bot)) {
-      endGame("Bot Wins!");
-    } else if (board.every(cell => cell)) {
-      endGame("Draw!");
-    } else {
-      isPlayerTurn = true;
+function checkWin(current) {
+  const winPatterns = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  for (const pattern of winPatterns) {
+    if (pattern.every(i => board[i] === current)) {
+      pattern.forEach(i => document.querySelectorAll('.cell')[i].classList.add('bounce'));
+      winSound.play();
+      return true;
     }
   }
+  return false;
+}
 
-  function updateBoard() {
-    document.querySelectorAll('.cell').forEach((cell, index) => {
-      cell.textContent = board[index];
-    });
-  }
+function endGame(msg) {
+  gameOver = true;
+  if (msg.includes("Win")) updateHighScore();
+  if (msg.includes("Draw")) drawSound.play();
+  messageElement.textContent = msg;
+  popupMessage.textContent = msg;
+  popup.classList.add('active');
+}
 
-  function checkWin(current) {
-    const winPatterns = [
-      [0,1,2], [3,4,5], [6,7,8],
-      [0,3,6], [1,4,7], [2,5,8],
-      [0,4,8], [2,4,6]
-    ];
-
-    for (const pattern of winPatterns) {
-      if (pattern.every(i => board[i] === current)) {
-        highlightCells(pattern);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function highlightCells(indices) {
-    const cells = document.querySelectorAll('.cell');
-    indices.forEach(i => {
-      cells[i].style.backgroundColor = '#4CAF50';
-    });
-  }
-
-  function endGame(msg) {
-    gameOver = true;
-    messageElement.textContent = msg;
-    popupMessage.textContent = msg;
-    popup.classList.add('active');
-  }
-
-  function restart() {
-    board = ['', '', '', '', '', '', '', '', ''];
-    gameOver = false;
-    messageElement.textContent = '';
-    popup.classList.remove('active');
-
-    isPlayerTurn = (difficulty === 'impossible') ? (document.getElementById('whoGoesFirst').value === 'yes') : true;
-
-    createBoard();
-
-    if (!isPlayerTurn) {
-      setTimeout(botMove, 500);
-    }
-  }
-
-  function bestMove() {
-    let bestScore = -Infinity;
-    let move;
-    for (let i = 0; i < board.length; i++) {
-      if (board[i] === '') {
-        board[i] = bot;
-        let score = minimax(board, 0, false);
-        board[i] = '';
-        if (score > bestScore) {
-          bestScore = score;
-          move = i;
-        }
-      }
-    }
-    return move;
-  }
-
-  function minimax(boardState, depth, isMax) {
-    if (checkStaticWin(bot, boardState)) return 10 - depth;
-    if (checkStaticWin(player, boardState)) return depth - 10;
-    if (boardState.every(cell => cell !== '')) return 0;
-
-    if (isMax) {
-      let best = -Infinity;
-      for (let i = 0; i < 9; i++) {
-        if (boardState[i] === '') {
-          boardState[i] = bot;
-          best = Math.max(best, minimax(boardState, depth + 1, false));
-          boardState[i] = '';
-        }
-      }
-      return best;
-    } else {
-      let best = Infinity;
-      for (let i = 0; i < 9; i++) {
-        if (boardState[i] === '') {
-          boardState[i] = player;
-          best = Math.min(best, minimax(boardState, depth + 1, true));
-          boardState[i] = '';
-        }
-      }
-      return best;
-    }
-  }
-
-  function checkStaticWin(currentPlayer, boardCheck) {
-    const patterns = [
-      [0,1,2], [3,4,5], [6,7,8],
-      [0,3,6], [1,4,7], [2,5,8],
-      [0,4,8], [2,4,6]
-    ];
-    return patterns.some(pattern => pattern.every(i => boardCheck[i] === currentPlayer));
-  }
-
+function restart() {
+  board = Array(9).fill('');
+  gameOver = false;
+  messageElement.textContent = '';
+  popup.classList.remove('active');
+  document.querySelectorAll('.cell').forEach(c => c.classList.remove('bounce'));
+  difficulty = document.getElementById('difficulty').value;
+  gameMode = document.getElementById('gameMode').value;
+  const whoFirstBox = document.getElementById('whoGoesFirstContainer');
+  whoFirstBox.style.display = (difficulty === 'impossible' && gameMode === 'single') ? 'inline' : 'none';
+  isPlayerTurn = (document.getElementById('whoGoesFirst').value === 'yes');
   createBoard();
-</script>
+  if (gameMode === 'single' && !isPlayerTurn) setTimeout(botMove, 400);
+}
 
-<a href="/" style="margin-top: 30px; color: #888; text-decoration: none;">← Back to Home</a>
-</body>
+function onDifficultyChange() {
+  difficulty = document.getElementById('difficulty').value;
+  restart();
+}
+
+function bestMove() {
+  let best = -Infinity, move;
+  for (let i = 0; i < 9; i++) {
+    if (!board[i]) {
+      board[i] = bot;
+      let score = minimax(board, 0, false);
+      board[i] = '';
+      if (score > best) { best = score; move = i; }
+    }
+  }
+  return move;
+}
+
+function minimax(b, depth, isMax) {
+  if (checkStaticWin(bot, b)) return 10 - depth;
+  if (checkStaticWin(player, b)) return depth - 10;
+  if (b.every(c => c)) return 0;
+  let best = isMax ? -Infinity : Infinity;
+  for (let i = 0; i < 9; i++) {
+    if (!b[i]) {
+      b[i] = isMax ? bot : player;
+      let score = minimax(b, depth + 1, !isMax);
+      b[i] = '';
+      best = isMax ? Math.max(score, best) : Math.min(score, best);
+    }
+  }
+  return best;
+}
+
+function checkStaticWin(current, b) {
+  return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(p => p.every(i => b[i] === current));
+}
+
+function updateHighScore() {
+  const score = parseInt(localStorage.getItem('neoxScore') || '0') + 1;
+  localStorage.setItem('neoxScore', score);
+  highScoreElement.textContent = `🏆 Your Wins: ${score}`;
+}
+
+window.onload = () => {
+  restart();
+  updateHighScore();
+};
+</script></body>
 </html>
