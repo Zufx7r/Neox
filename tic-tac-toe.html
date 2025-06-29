@@ -141,7 +141,7 @@
   <label for="difficulty">Difficulty:</label>
   <select id="difficulty" onchange="onDifficultyChange()">
     <option value="easy">Easy</option>
-    <option value="hard">Hard</option>
+    <option value="hard" selected>Hard</option> <!-- Default selected -->
     <option value="impossible">Impossible</option>
   </select>
 </div>
@@ -166,7 +166,7 @@
   let gameOver = false;
   let isPlayerTurn = true;
 
-  let difficulty = 'easy';
+  let difficulty = 'hard'; // Default to hard
 
   function createBoard() {
     boardElement.innerHTML = '';
@@ -186,7 +186,6 @@
 
   function handleCellClick(e) {
     const idx = e.target.dataset.index;
-
     if (!isPlayerTurn || board[idx] || gameOver) return;
 
     board[idx] = player;
@@ -280,9 +279,6 @@
     messageElement.textContent = '';
     popup.classList.remove('active');
     createBoard();
-    if (!isPlayerTurn) {
-      setTimeout(botMove, 500);
-    }
   }
 
   function bestMove() {
