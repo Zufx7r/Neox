@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pls Donate - Robux Calculator</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: #0d0d0d;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #ccc;
+      margin-bottom: 10px;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: 2px solid #00ffcc;
+      background: #1a1a1a;
+      color: white;
+      width: 90%;
+      max-width: 300px;
+      text-align: center;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #00ffaa;
+      box-shadow: 0 0 15px #00ffaa;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #00ffaa, #00ccff);
+      color: #111;
+      font-weight: bold;
+      width: 90%;
+      max-width: 300px;
+      transition: 0.3s;
+      box-shadow: 0 0 15px #00ffaa;
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #00ffcc, #00ff77);
+      box-shadow: 0 0 25px #00ffaa;
+      transform: scale(1.05);
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #00ffcc;
+      text-shadow: 0 0 8px #00ffaa;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h1>💸 Pls Donate - Robux Calculator</h1>
+  <p>Enter donation amount:</p>
+  <input type="number" id="donation" placeholder="Enter Robux">
+  <br>
+  <button onclick="calculate()">Calculate</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    function calculate() {
+      let donation = document.getElementById("donation").value;
+      if (donation === "" || donation <= 0) {
+        document.getElementById("result").innerHTML = "⚠️ Please enter a valid number.";
+        return;
+      }
+      let afterTax = donation - (donation * 0.30);
+      document.getElementById("result").innerHTML = 
+        "✅ You will get: <span style='color:#00ffaa'>" + Math.floor(afterTax) + " Robux</span>";
+    }
+  </script>
+</body>
+</html>
