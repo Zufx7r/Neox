@@ -102,7 +102,7 @@
     function calculate() {
       let donation = document.getElementById("donation").value;
       if (donation === "" || donation <= 0) {
-        document.getElementById("result").innerHTML = "⚠️ Please enter a valid number.";
+        document.getElementById("result").innerHTML = "Please enter a valid number.";
         return;
       }
       let afterTax = donation - (donation * 0.30);
