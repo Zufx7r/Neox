@@ -169,7 +169,7 @@
   let gameOver = false;
   let isPlayerTurn = true;
 
-  let difficulty = 'hard'; // Default to hard
+  let difficulty = 'hard'; // Default
 
   function createBoard() {
     boardElement.innerHTML = '';
@@ -208,34 +208,34 @@
     setTimeout(botMove, 500);
   }
 
-  function botMove() {
+  // 🔥 Bot now uses Netlify API
+  async function botMove() {
     if (gameOver) return;
 
-    let move;
-    if (difficulty === 'easy') {
-      const available = board.map((v, i) => v === '' ? i : null).filter(i => i !== null);
-      move = available[Math.floor(Math.random() * available.length)];
-    } else if (difficulty === 'hard') {
-      const useMinimax = Math.random() > 0.5;
-      if (useMinimax) {
-        move = bestMove();
-      } else {
-        const available = board.map((v, i) => v === '' ? i : null).filter(i => i !== null);
-        move = available[Math.floor(Math.random() * available.length)];
+    try {
+      const res = await fetch("/.netlify/functions/tictactoe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ board, player, difficulty })
+      });
+
+      const data = await res.json();
+      const move = data.bestMove;
+
+      if (move !== undefined) {
+        board[move] = bot;
+        updateBoard();
+
+        if (checkWin(bot)) {
+          endGame("Bot Wins!");
+        } else if (board.every(cell => cell)) {
+          endGame("Draw!");
+        } else {
+          isPlayerTurn = true;
+        }
       }
-    } else {
-      move = bestMove();
-    }
-
-    board[move] = bot;
-    updateBoard();
-
-    if (checkWin(bot)) {
-      endGame("Bot Wins!");
-    } else if (board.every(cell => cell)) {
-      endGame("Draw!");
-    } else {
-      isPlayerTurn = true;
+    } catch (err) {
+      console.error("Bot API error:", err);
     }
   }
 
@@ -284,60 +284,7 @@
     createBoard();
   }
 
-  function bestMove() {
-    let bestScore = -Infinity;
-    let move;
-    for (let i = 0; i < board.length; i++) {
-      if (board[i] === '') {
-        board[i] = bot;
-        let score = minimax(board, 0, false);
-        board[i] = '';
-        if (score > bestScore) {
-          bestScore = score;
-          move = i;
-        }
-      }
-    }
-    return move;
-  }
-
-  function minimax(boardState, depth, isMax) {
-    if (checkStaticWin(bot, boardState)) return 10 - depth;
-    if (checkStaticWin(player, boardState)) return depth - 10;
-    if (boardState.every(cell => cell !== '')) return 0;
-
-    if (isMax) {
-      let best = -Infinity;
-      for (let i = 0; i < 9; i++) {
-        if (boardState[i] === '') {
-          boardState[i] = bot;
-          best = Math.max(best, minimax(boardState, depth + 1, false));
-          boardState[i] = '';
-        }
-      }
-      return best;
-    } else {
-      let best = Infinity;
-      for (let i = 0; i < 9; i++) {
-        if (boardState[i] === '') {
-          boardState[i] = player;
-          best = Math.min(best, minimax(boardState, depth + 1, true));
-          boardState[i] = '';
-        }
-      }
-      return best;
-    }
-  }
-
-  function checkStaticWin(currentPlayer, boardCheck) {
-    const patterns = [
-      [0,1,2], [3,4,5], [6,7,8],
-      [0,3,6], [1,4,7], [2,5,8],
-      [0,4,8], [2,4,6]
-    ];
-    return patterns.some(pattern => pattern.every(i => boardCheck[i] === currentPlayer));
-  }
-
+  // init
   createBoard();
 </script>
 
