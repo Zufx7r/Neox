@@ -3,310 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureText - Encrypt & Decrypt</title>
+    <title>Secure Text Encryption</title>
     
     <!-- CryptoJS Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
     <style>
-        /* CSS for the Dark UI */
-        :root {
-            --background-color: #1a1a2e;
-            --surface-color: #16213e;
-            --primary-color: #0f3460;
-            --accent-color: #e94560;
-            --text-color: #dcdcdc;
-            --text-muted-color: #a0a0a0;
-            --border-radius: 8px;
-            --transition-speed: 0.3s;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        /* CSS updated to exactly match bcrypt-generator.com's color scheme */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
-            padding: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 600px;
-            background-color: var(--surface-color);
-            border-radius: var(--border-radius);
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--primary-color);
+            max-width: 800px;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: var(--accent-color);
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .header p {
-            color: var(--text-muted-color);
-            font-size: 1rem;
-        }
-        
-        .form-group {
+        .card {
+            background-color: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             margin-bottom: 20px;
+            border: 1px solid #e6e6e6;
+        }
+
+        .card-header {
+            /* Changed from green to black/dark grey */
+            background-color: #343a40; 
+            color: #ffffff;
+            padding: 12px 20px;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-muted-color);
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #555;
         }
 
-        .input-field,
-        .textarea-field {
+        .form-control {
             width: 100%;
-            padding: 15px;
-            background-color: var(--primary-color);
-            border: 1px solid transparent;
-            border-radius: var(--border-radius);
-            color: var(--text-color);
+            padding: 10px;
             font-size: 1rem;
-            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; 
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .textarea-field {
-            min-height: 150px;
-            resize: vertical;
-        }
-        
-        .input-field:focus,
-        .textarea-field:focus {
+        .form-control:focus {
             outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.2);
-        }
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 25px;
+            /* Updated focus color from green to a neutral blueish tint */
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
         }
 
         .btn {
-            flex-grow: 1;
-            padding: 15px;
-            border: none;
-            border-radius: var(--border-radius);
+            display: inline-block;
+            padding: 10px 20px;
             font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color var(--transition-speed), transform var(--transition-speed);
-        }
-        
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .btn-encrypt {
-            background-color: var(--accent-color);
-            color: #fff;
-        }
-        
-        .btn-encrypt:hover {
-            background-color: #d43d51;
-        }
-
-        .btn-decrypt {
-            background-color: #5372f0;
-            color: #fff;
-        }
-        
-        .btn-decrypt:hover {
-            background-color: #4561d9;
-        }
-
-        .result-box {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: var(--primary-color);
-            border-radius: var(--border-radius);
-            border: 1px dashed var(--accent-color);
-            min-height: 100px;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            color: var(--text-color);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9rem;
-            position: relative;
-        }
-
-        .result-box.error {
-            border-color: #ff5555;
-            color: #ff9999;
-        }
-
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 5px 10px;
-            background-color: var(--accent-color);
-            color: white;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 4px;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            opacity: 0;
-            transition: opacity var(--transition-speed);
+            transition: background-color 0.2s;
+        }
+
+        .btn-dark {
+            /* New class for black button */
+            background-color: #343a40;
+            color: #ffffff;
+        }
+
+        .btn-dark:hover {
+            /* Darker shade for hover effect */
+            background-color: #23272b;
+        }
+
+        #result-box {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+            word-wrap: break-word;
+            min-height: 40px; 
+            margin-top: 15px;
+            border: 1px solid #ccc;
+        }
+
+        .text-center {
+            text-align: center;
         }
         
-        .result-box:hover .copy-btn {
-            opacity: 1;
+        .mt-3 {
+            margin-top: 1rem;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="header">
-            <h1>SecureText</h1>
-            <p>Encrypt and Decrypt text with a password.</p>
+        <!-- Encryption Box -->
+        <div class="card">
+            <div class="card-header">
+                Bcrypt Generator (Encrypt Text)
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="encrypt-text">String / Text to Encrypt</label>
+                    <textarea id="encrypt-text" class="form-control" rows="4" placeholder="Enter the text to encrypt"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="encrypt-password">Password</label>
+                    <input type="password" id="encrypt-password" class="form-control" placeholder="Enter your secret password">
+                </div>
+                <div class="text-center">
+                    <button id="encrypt-btn" class="btn btn-dark">Encrypt</button>
+                </div>
+                <div id="encrypt-result" class="mt-3" style="display: none;">
+                    <label>Encrypted Result</label>
+                    <div id="result-box" class="encrypted-output"></div>
+                </div>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="text-input">Your Text</label>
-            <textarea id="text-input" class="textarea-field" placeholder="Enter the text to encrypt, or the encrypted text to decrypt..."></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="password-input">Password</label>
-            <input type="password" id="password-input" class="input-field" placeholder="Enter your secret password">
-        </div>
-
-        <div class="button-group">
-            <button id="encrypt-btn" class="btn btn-encrypt">Encrypt</button>
-            <button id="decrypt-btn" class="btn btn-decrypt">Decrypt</button>
-        </div>
-        
-        <div id="result-container" class="form-group" style="display: none;">
-            <label>Result</label>
-            <div id="result-box" class="result-box">
-                <button id="copy-btn" class="copy-btn">Copy</button>
+        <!-- Decryption Box -->
+        <div class="card">
+            <div class="card-header">
+                Bcrypt Checker (Decrypt Text)
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="decrypt-text">Encrypted Text to Check</label>
+                    <textarea id="decrypt-text" class="form-control" rows="4" placeholder="Enter the encrypted text to decrypt"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="decrypt-password">Password to Check Against</label>
+                    <input type="password" id="decrypt-password" class="form-control" placeholder="Enter the password used for encryption">
+                </div>
+                <div class="text-center">
+                    <button id="decrypt-btn" class="btn btn-dark">Decrypt</button>
+                </div>
+                 <div id="decrypt-result" class="mt-3" style="display: none;">
+                    <label>Decrypted Result</label>
+                    <div id="result-box" class="decrypted-output"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // JavaScript for Encryption and Decryption
-        const textInput = document.getElementById('text-input');
-        const passwordInput = document.getElementById('password-input');
+        // --- Element Selection ---
+        const encryptText = document.getElementById('encrypt-text');
+        const encryptPassword = document.getElementById('encrypt-password');
         const encryptBtn = document.getElementById('encrypt-btn');
+        const encryptResultContainer = document.getElementById('encrypt-result');
+        const encryptedOutput = document.querySelector('.encrypted-output');
+
+        const decryptText = document.getElementById('decrypt-text');
+        const decryptPassword = document.getElementById('decrypt-password');
         const decryptBtn = document.getElementById('decrypt-btn');
-        const resultContainer = document.getElementById('result-container');
-        const resultBox = document.getElementById('result-box');
-        const copyBtn = document.getElementById('copy-btn');
+        const decryptResultContainer = document.getElementById('decrypt-result');
+        const decryptedOutput = document.querySelector('.decrypted-output');
         
-        // --- Encryption Function ---
+        // --- Encryption Logic ---
         encryptBtn.addEventListener('click', () => {
-            const text = textInput.value;
-            const password = passwordInput.value;
+            const text = encryptText.value;
+            const password = encryptPassword.value;
 
             if (!text || !password) {
-                alert('Please enter text and a password.');
+                alert('Please enter text and a password to encrypt.');
                 return;
             }
 
             try {
-                // Encrypt the text using AES
                 const encrypted = CryptoJS.AES.encrypt(text, password).toString();
-                displayResult(encrypted);
+                encryptedOutput.textContent = encrypted;
+                encryptResultContainer.style.display = 'block';
             } catch (error) {
-                displayResult('Encryption failed. Please try again.', true);
+                encryptedOutput.textContent = 'Encryption failed. Please try again.';
+                encryptResultContainer.style.display = 'block';
             }
         });
 
-        // --- Decryption Function ---
+        // --- Decryption Logic ---
         decryptBtn.addEventListener('click', () => {
-            const encryptedText = textInput.value;
-            const password = passwordInput.value;
+            const encryptedText = decryptText.value;
+            const password = decryptPassword.value;
 
             if (!encryptedText || !password) {
-                alert('Please enter the encrypted text and the password.');
+                alert('Please enter the encrypted text and the password to decrypt.');
                 return;
             }
+            
+            decryptResultContainer.style.display = 'block'; 
 
             try {
-                // Decrypt the text
                 const bytes = CryptoJS.AES.decrypt(encryptedText, password);
                 const originalText = bytes.toString(CryptoJS.enc.Utf8);
 
                 if (originalText) {
-                    displayResult(originalText);
+                    decryptedOutput.textContent = originalText;
+                    decryptedOutput.style.color = '#333'; // Default dark text for success
                 } else {
-                    displayResult('Decryption failed. Check your password or encrypted text.', true);
+                    decryptedOutput.textContent = 'Decryption Failed: Invalid password or corrupted text.';
+                    decryptedOutput.style.color = '#dc3545'; // Red for failure
                 }
             } catch (error) {
-                 displayResult('Decryption failed. The encrypted text may be invalid.', true);
+                 decryptedOutput.textContent = 'Decryption Failed: The input text is not valid encrypted data.';
+                 decryptedOutput.style.color = '#dc3545';
             }
         });
-        
-        // --- Copy to Clipboard ---
-        copyBtn.addEventListener('click', () => {
-            const textToCopy = resultBox.textContent.replace('Copy', '').trim(); // Remove the button text
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                copyBtn.textContent = 'Copied!';
-                setTimeout(() => {
-                    copyBtn.textContent = 'Copy';
-                }, 2000);
-            }).catch(err => {
-                alert('Failed to copy text.');
-            });
-        });
-
-        // --- Helper function to display results ---
-        function displayResult(text, isError = false) {
-            resultContainer.style.display = 'block';
-            resultBox.innerHTML = ''; // Clear previous content
-            
-            // Re-create the copy button and append it
-            const newCopyBtn = document.createElement('button');
-            newCopyBtn.id = 'copy-btn';
-            newCopyBtn.className = 'copy-btn';
-            newCopyBtn.textContent = 'Copy';
-            newCopyBtn.addEventListener('click', () => {
-                 navigator.clipboard.writeText(text).then(() => {
-                    newCopyBtn.textContent = 'Copied!';
-                    setTimeout(() => {
-                        newCopyBtn.textContent = 'Copy';
-                    }, 2000);
-                });
-            });
-
-            const textNode = document.createTextNode(text);
-            resultBox.appendChild(textNode);
-            
-            if(!isError) {
-                resultBox.appendChild(newCopyBtn);
-            }
-
-            if (isError) {
-                resultBox.classList.add('error');
-            } else {
-                resultBox.classList.remove('error');
-            }
-        }
     </script>
 
 </body>
