@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Webhook Viewer</title>
+  <style>
+    body {
+      background: #0d0d0d;
+      color: #00ffcc;
+      font-family: monospace;
+      padding: 20px;
+    }
+    pre {
+      background: #111;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+    button {
+      padding: 8px 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Webhook Logs</h2>
+<button onclick="load()">Refresh</button>
+
+<div id="logs"></div>
+
+<script>
+async function load() {
+  const res = await fetch("/.netlify/functions/webhook");
+  const data = await res.json();
+
+  document.getElementById("logs").innerHTML =
+    data.map(l => `<pre>${JSON.stringify(l, null, 2)}</pre>`).join("");
+}
+
+load();
+</script>
+
+</body>
+</html>
