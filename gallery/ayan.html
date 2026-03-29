@@ -3,67 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Friends Gallery</title>
+<title>Ayan Gallery</title>
 <style>
-body {
-    margin: 0;
-    font-family: Arial;
-    scroll-behavior: smooth;
-    background: black;
-    color: white;
+body{
+    margin:0;
+    background:black;
+    scroll-behavior:smooth;
+    font-family:Arial;
 }
 
-.section {
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+.section{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
 }
 
-img, video {
-    max-width: 90%;
-    max-height: 70vh;
-    border-radius: 15px;
+video{
+    width:90%;
+    max-height:75vh;
+    border-radius:15px;
 }
 
-.arrow {
-    margin-top: 20px;
-    font-size: 40px;
-    cursor: pointer;
-    animation: bounce 1s infinite;
+.arrow{
+    color:white;
+    font-size:40px;
+    cursor:pointer;
+    margin-top:20px;
+    animation:bounce 1s infinite;
 }
 
-@keyframes bounce {
-    50% { transform: translateY(10px); }
+@keyframes bounce{
+    50%{transform:translateY(10px);}
 }
 </style>
 </head>
 <body>
 
-<div class="section" id="section1">
-    <img src="friend1.jpg" alt="Friend">
-    <div class="arrow" onclick="scrollToNext('section2')">⬇</div>
-</div>
-
-<div class="section" id="section2">
+<div class="section" id="v1">
     <video controls>
-        <source src="video1.mp4" type="video/mp4">
+        <source src="vid.mp4" type="video/mp4">
     </video>
-    <div class="arrow" onclick="scrollToNext('section3')">⬇</div>
+    <div class="arrow" onclick="document.getElementById('v2').scrollIntoView({behavior:'smooth'})">⬇</div>
 </div>
 
-<div class="section" id="section3">
-    <img src="friend2.jpg" alt="Friend">
+<div class="section" id="v2">
+    <video controls>
+        <source src="vid2.mp4" type="video/mp4">
+    </video>
+    <div class="arrow" onclick="document.getElementById('v3').scrollIntoView({behavior:'smooth'})">⬇</div>
 </div>
 
-<script>
-function scrollToNext(id) {
-    document.getElementById(id).scrollIntoView({
-        behavior: 'smooth'
-    });
-}
-</script>
+<div class="section" id="v3">
+    <video controls>
+        <source src="vid3.mp4" type="video/mp4">
+    </video>
+</div>
 
 </body>
 </html>
