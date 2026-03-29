@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friends Gallery</title>
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    scroll-behavior: smooth;
+    background: black;
+    color: white;
+}
+
+.section {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+img, video {
+    max-width: 90%;
+    max-height: 70vh;
+    border-radius: 15px;
+}
+
+.arrow {
+    margin-top: 20px;
+    font-size: 40px;
+    cursor: pointer;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    50% { transform: translateY(10px); }
+}
+</style>
+</head>
+<body>
+
+<div class="section" id="section1">
+    <img src="friend1.jpg" alt="Friend">
+    <div class="arrow" onclick="scrollToNext('section2')">⬇</div>
+</div>
+
+<div class="section" id="section2">
+    <video controls>
+        <source src="video1.mp4" type="video/mp4">
+    </video>
+    <div class="arrow" onclick="scrollToNext('section3')">⬇</div>
+</div>
+
+<div class="section" id="section3">
+    <img src="friend2.jpg" alt="Friend">
+</div>
+
+<script>
+function scrollToNext(id) {
+    document.getElementById(id).scrollIntoView({
+        behavior: 'smooth'
+    });
+}
+</script>
+
+</body>
+</html>
