@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ayan Gallery</title>
+
 <style>
 body{
     margin:0;
     background:black;
-    scroll-behavior:smooth;
     font-family:Arial;
+    scroll-behavior:smooth;
 }
 
 .section{
@@ -24,6 +25,7 @@ video{
     width:90%;
     max-height:75vh;
     border-radius:15px;
+    box-shadow:0 0 20px rgba(255,255,255,0.2);
 }
 
 .arrow{
@@ -32,10 +34,13 @@ video{
     cursor:pointer;
     margin-top:20px;
     animation:bounce 1s infinite;
+    user-select:none;
 }
 
 @keyframes bounce{
-    50%{transform:translateY(10px);}
+    50%{
+        transform:translateY(10px);
+    }
 }
 </style>
 </head>
@@ -51,13 +56,6 @@ video{
 <div class="section" id="v2">
     <video controls>
         <source src="vid2.mp4" type="video/mp4">
-    </video>
-    <div class="arrow" onclick="document.getElementById('v3').scrollIntoView({behavior:'smooth'})">⬇</div>
-</div>
-
-<div class="section" id="v3">
-    <video controls>
-        <source src="vid3.mp4" type="video/mp4">
     </video>
 </div>
 
