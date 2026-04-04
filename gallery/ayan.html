@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ayan Gallery Swipe</title>
+<title>Ayan Gallery Swipe Fixed</title>
 <style>
 html, body{
     margin:0;
@@ -106,7 +106,7 @@ function initCounts(){
     }
 }
 
-// Snap scroll handler
+// Snap scroll handler (one section per swipe)
 let isScrolling;
 container.addEventListener('scroll', () => {
     if(!started) return;
@@ -129,13 +129,14 @@ container.addEventListener('scroll', () => {
     }, 80); // wait 80ms after scroll stop
 });
 
-// Check visible video for autoplay and views
+// Check visible video for autoplay, loop, views
 function checkVisibleVideo(){
     if(!started) return;
     const videos = document.querySelectorAll("video");
     videos.forEach((video,index)=>{
         const rect = video.getBoundingClientRect();
-        if(rect.top >= 0 && rect.top < window.innerHeight/2){
+        // Play if any part of the video is visible
+        if(rect.bottom > 0 && rect.top < window.innerHeight){
             videos.forEach(v=>{ if(v!==video) v.pause(); });
             video.play();
             if(!video.dataset.viewed){
@@ -149,6 +150,7 @@ function checkVisibleVideo(){
     });
 }
 
+// Start tap for autoplay with sound
 document.getElementById("tap").onclick = function(){
     started = true;
     this.style.display = "none";
