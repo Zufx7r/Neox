@@ -70,6 +70,10 @@ const API_URL = "/.netlify/functions/video";
 const container = document.getElementById("container");
 let started = false;
 
+// Track viewed and liked videos per session
+let viewedVideos = JSON.parse(sessionStorage.getItem("viewedVideos") || "[]");
+let likedVideos = JSON.parse(sessionStorage.getItem("likedVideos") || "[]");
+
 // Create 100 video sections dynamically
 for(let i=1;i<=100;i++){
     const section = document.createElement("div");
@@ -92,17 +96,25 @@ for(let i=1;i<=100;i++){
     container.appendChild(section);
 }
 
-// Like a video (global via Neon)
+// Like/dislike toggle
 async function likeVideo(id){
+    const action = likedVideos.includes(id) ? "dislike" : "like"; 
     const res = await fetch(API_URL, {
         method:"POST",
-        body: JSON.stringify({videoId:id, action:"like"})
+        body: JSON.stringify({videoId:id, action})
     });
     const data = await res.json();
     document.getElementById("like"+id).textContent = data.likes;
+
+    if(action==="like"){
+        likedVideos.push(id);
+    } else {
+        likedVideos = likedVideos.filter(v=>v!==id);
+    }
+    sessionStorage.setItem("likedVideos", JSON.stringify(likedVideos));
 }
 
-// Add view for a video (global via Neon)
+// Add view (once per session)
 async function addView(id){
     const res = await fetch(API_URL, {
         method:"POST",
@@ -157,9 +169,11 @@ function checkVisibleVideo(){
         if(rect.bottom > 0 && rect.top < window.innerHeight){
             videos.forEach(v=>{ if(v!==video) v.pause(); });
             video.play();
-            if(!video.dataset.viewed){
-                addView(index+1);
-                video.dataset.viewed = "yes";
+            const vidNum = index+1;
+            if(!viewedVideos.includes(vidNum)){
+                addView(vidNum);
+                viewedVideos.push(vidNum);
+                sessionStorage.setItem("viewedVideos", JSON.stringify(viewedVideos));
             }
         } else video.pause();
     });
