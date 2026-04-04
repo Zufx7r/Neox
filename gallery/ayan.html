@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ayan Gallery Swipe Fixed</title>
+<title>Ayan Gallery Neon</title>
 <style>
 html, body{
     margin:0;
@@ -64,10 +64,13 @@ button{
 <div class="container" id="container"></div>
 
 <script>
+// Config: API endpoint for Neon serverless function
+const API_URL = "/.netlify/functions/video";
+
 const container = document.getElementById("container");
 let started = false;
 
-// Dynamically create up to 100 videos
+// Create 100 video sections dynamically
 for(let i=1;i<=100;i++){
     const section = document.createElement("div");
     section.className = "section";
@@ -82,31 +85,47 @@ for(let i=1;i<=100;i++){
     info.innerHTML = `<button onclick="likeVideo(${i})">❤️ <span id="like${i}">0</span></button>
                       <div>👁️ <span id="view${i}">0</span></div>`;
 
-    // Only append if video exists
-    video.onerror = ()=> section.remove();
+    video.onerror = ()=> section.remove(); // remove if file doesn't exist
+
     section.appendChild(video);
     section.appendChild(info);
     container.appendChild(section);
 }
 
-// Initialize likes and views
-function likeVideo(id){
-    let likes = localStorage.getItem("like"+id) || 0;
-    likes++;
-    localStorage.setItem("like"+id, likes);
-    document.getElementById("like"+id).textContent = likes;
+// Like a video (global via Neon)
+async function likeVideo(id){
+    const res = await fetch(API_URL, {
+        method:"POST",
+        body: JSON.stringify({videoId:id, action:"like"})
+    });
+    const data = await res.json();
+    document.getElementById("like"+id).textContent = data.likes;
 }
 
-function initCounts(){
+// Add view for a video (global via Neon)
+async function addView(id){
+    const res = await fetch(API_URL, {
+        method:"POST",
+        body: JSON.stringify({videoId:id, action:"view"})
+    });
+    const data = await res.json();
+    document.getElementById("view"+id).textContent = data.views;
+}
+
+// Initialize counts when page starts
+async function initCounts(){
     for(let i=1;i<=100;i++){
-        if(document.getElementById("like"+i)){
-            document.getElementById("like"+i).textContent = localStorage.getItem("like"+i) || 0;
-            document.getElementById("view"+i).textContent = localStorage.getItem("view"+i) || 0;
-        }
+        const res = await fetch(API_URL, {
+            method:"POST",
+            body: JSON.stringify({videoId:i, action:"get"})
+        });
+        const data = await res.json();
+        if(document.getElementById("like"+i)) document.getElementById("like"+i).textContent = data.likes;
+        if(document.getElementById("view"+i)) document.getElementById("view"+i).textContent = data.views;
     }
 }
 
-// Snap scroll handler (one section per swipe)
+// Snap scroll one video per swipe
 let isScrolling;
 container.addEventListener('scroll', () => {
     if(!started) return;
@@ -126,31 +145,27 @@ container.addEventListener('scroll', () => {
         });
         closest.scrollIntoView({behavior:'smooth'});
         checkVisibleVideo();
-    }, 80); // wait 80ms after scroll stop
+    }, 80);
 });
 
-// Check visible video for autoplay, loop, views
+// Check which video is visible for autoplay and views
 function checkVisibleVideo(){
     if(!started) return;
     const videos = document.querySelectorAll("video");
     videos.forEach((video,index)=>{
         const rect = video.getBoundingClientRect();
-        // Play if any part of the video is visible
         if(rect.bottom > 0 && rect.top < window.innerHeight){
             videos.forEach(v=>{ if(v!==video) v.pause(); });
             video.play();
             if(!video.dataset.viewed){
-                let views = localStorage.getItem("view"+(index+1)) || 0;
-                views++;
-                localStorage.setItem("view"+(index+1), views);
-                document.getElementById("view"+(index+1)).textContent = views;
+                addView(index+1);
                 video.dataset.viewed = "yes";
             }
         } else video.pause();
     });
 }
 
-// Start tap for autoplay with sound
+// Start tap
 document.getElementById("tap").onclick = function(){
     started = true;
     this.style.display = "none";
