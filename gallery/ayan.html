@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ayan Gallery Dynamic</title>
+<title>Ayan Gallery Swipe</title>
 <style>
 html, body{
     margin:0;
@@ -97,7 +97,6 @@ function likeVideo(id){
     document.getElementById("like"+id).textContent = likes;
 }
 
-// Load saved likes/views
 function initCounts(){
     for(let i=1;i<=100;i++){
         if(document.getElementById("like"+i)){
@@ -107,7 +106,30 @@ function initCounts(){
     }
 }
 
-// Check which video is visible and autoplay
+// Snap scroll handler
+let isScrolling;
+container.addEventListener('scroll', () => {
+    if(!started) return;
+
+    window.clearTimeout(isScrolling);
+    isScrolling = setTimeout(() => {
+        const sections = document.querySelectorAll('.section');
+        let closest = sections[0];
+        let minDist = Math.abs(sections[0].getBoundingClientRect().top);
+
+        sections.forEach(section=>{
+            let dist = Math.abs(section.getBoundingClientRect().top);
+            if(dist < minDist){
+                closest = section;
+                minDist = dist;
+            }
+        });
+        closest.scrollIntoView({behavior:'smooth'});
+        checkVisibleVideo();
+    }, 80); // wait 80ms after scroll stop
+});
+
+// Check visible video for autoplay and views
 function checkVisibleVideo(){
     if(!started) return;
     const videos = document.querySelectorAll("video");
@@ -123,13 +145,9 @@ function checkVisibleVideo(){
                 document.getElementById("view"+(index+1)).textContent = views;
                 video.dataset.viewed = "yes";
             }
-        } else {
-            video.pause();
-        }
+        } else video.pause();
     });
 }
-
-document.querySelector(".container").addEventListener("scroll", checkVisibleVideo);
 
 document.getElementById("tap").onclick = function(){
     started = true;
