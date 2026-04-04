@@ -6,29 +6,24 @@
 <title>Ayan Gallery</title>
 
 <style>
-html,body{
+html, body{
     margin:0;
+    padding:0;
     height:100%;
-    overflow:hidden;
     background:black;
-    font-family:Arial;
+    overflow:hidden;
 }
 
 .container{
     height:100vh;
     overflow-y:scroll;
     scroll-snap-type:y mandatory;
-    -webkit-overflow-scrolling:touch;
 }
 
 .section{
     height:100vh;
-    width:100%;
     scroll-snap-align:start;
     position:relative;
-    display:flex;
-    justify-content:center;
-    align-items:center;
 }
 
 video{
@@ -41,7 +36,7 @@ video{
 .info{
     position:absolute;
     right:20px;
-    bottom:80px;
+    bottom:100px;
     color:white;
     font-size:24px;
     display:flex;
@@ -56,28 +51,42 @@ button{
     font-size:24px;
     cursor:pointer;
 }
+
+.tap{
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-size:28px;
+    background:black;
+    z-index:10;
+}
 </style>
 </head>
 <body>
 
+<div class="tap" id="tap">Tap to Start</div>
+
 <div class="container">
 
 <div class="section">
-    <video muted loop id="video1">
+    <video loop id="video1">
         <source src="vid.mp4" type="video/mp4">
     </video>
     <div class="info">
-        <button onclick="likeVideo('1')">❤️ <span id="like1">0</span></button>
+        <button onclick="likeVideo(1)">❤️ <span id="like1">0</span></button>
         <div>👁️ <span id="view1">0</span></div>
     </div>
 </div>
 
 <div class="section">
-    <video muted loop id="video2">
+    <video loop id="video2">
         <source src="vid2.mp4" type="video/mp4">
     </video>
     <div class="info">
-        <button onclick="likeVideo('2')">❤️ <span id="like2">0</span></button>
+        <button onclick="likeVideo(2)">❤️ <span id="like2">0</span></button>
         <div>👁️ <span id="view2">0</span></div>
     </div>
 </div>
@@ -86,13 +95,13 @@ button{
 
 <script>
 const videos = document.querySelectorAll("video");
+let started = false;
 
 function likeVideo(id){
-    let key = "like" + id;
-    let count = localStorage.getItem(key) || 0;
-    count++;
-    localStorage.setItem(key,count);
-    document.getElementById(key).textContent = count;
+    let likes = localStorage.getItem("like"+id) || 0;
+    likes++;
+    localStorage.setItem("like"+id, likes);
+    document.getElementById("like"+id).textContent = likes;
 }
 
 for(let i=1;i<=2;i++){
@@ -100,35 +109,39 @@ for(let i=1;i<=2;i++){
     document.getElementById("view"+i).textContent = localStorage.getItem("view"+i) || 0;
 }
 
-function checkVideos(){
+function checkVisibleVideo(){
+    if(!started) return;
+
     videos.forEach((video,index)=>{
         const rect = video.getBoundingClientRect();
 
         if(rect.top >= 0 && rect.top < window.innerHeight/2){
-            videos.forEach(v=>{ if(v!==video) v.pause(); });
+            videos.forEach(v=>{
+                if(v !== video) v.pause();
+            });
 
             video.play();
 
-            let id = index+1;
-            let key = "view"+id;
-
             if(!video.dataset.viewed){
-                let count = localStorage.getItem(key) || 0;
-                count++;
-                localStorage.setItem(key,count);
-                document.getElementById(key).textContent = count;
+                let views = localStorage.getItem("view"+(index+1)) || 0;
+                views++;
+                localStorage.setItem("view"+(index+1), views);
+                document.getElementById("view"+(index+1)).textContent = views;
                 video.dataset.viewed = "yes";
             }
-
         } else {
             video.pause();
         }
     });
 }
 
-document.querySelector(".container").addEventListener("scroll",checkVideos);
+document.querySelector(".container").addEventListener("scroll", checkVisibleVideo);
 
-checkVideos();
+document.getElementById("tap").onclick = function(){
+    started = true;
+    this.style.display = "none";
+    checkVisibleVideo();
+};
 </script>
 
 </body>
