@@ -10,7 +10,8 @@ body{
     margin:0;
     background:black;
     font-family:Arial;
-    scroll-behavior:smooth;
+    overflow-y:scroll;
+    scroll-snap-type:y mandatory;
 }
 
 .section{
@@ -18,81 +19,95 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    flex-direction:column;
+    scroll-snap-align:start;
 }
 
 video{
-    width:90%;
-    max-height:75vh;
-    border-radius:15px;
-    box-shadow:0 0 20px rgba(255,255,255,0.2);
-}
-
-.arrow{
-    color:white;
-    font-size:40px;
-    cursor:pointer;
-    margin-top:20px;
-    animation:bounce 1s infinite;
-    user-select:none;
-}
-
-@keyframes bounce{
-    50%{
-        transform:translateY(10px);
-    }
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    background:black;
 }
 </style>
 </head>
 <body>
 
-<div class="section" id="v1">
-    <video controls>
+<div class="section">
+    <video controls muted loop>
         <source src="vid.mp4" type="video/mp4">
     </video>
-    <div class="arrow" onclick="document.getElementById('v2').scrollIntoView({behavior:'smooth'})">⬇</div>
 </div>
 
-<div class="section" id="v2">
-    <video controls>
+<div class="section">
+    <video controls muted loop>
         <source src="vid2.mp4" type="video/mp4">
     </video>
-    <div class="arrow" onclick="document.getElementById('v3').scrollIntoView({behavior:'smooth'})">⬇</div>
 </div>
 
-<div class="section" id="v3">
-    <video controls>
+<div class="section">
+    <video controls muted loop>
         <source src="vid3.mp4" type="video/mp4">
     </video>
-    <div class="arrow" onclick="document.getElementById('v4').scrollIntoView({behavior:'smooth'})">⬇</div>
 </div>
 
-<div class="section" id="v4">
-    <video controls>
+<div class="section">
+    <video controls muted loop>
         <source src="vid4.mp4" type="video/mp4">
     </video>
-    <div class="arrow" onclick="document.getElementById('v5').scrollIntoView({behavior:'smooth'})">⬇</div>
 </div>
 
-<div class="section" id="v5">
-    <video controls>
+<div class="section">
+    <video controls muted loop>
         <source src="vid5.mp4" type="video/mp4">
     </video>
-    <div class="arrow" onclick="document.getElementById('v6').scrollIntoView({behavior:'smooth'})">⬇</div>
 </div>
 
-<div class="section" id="v6">
-    <video controls>
+<div class="section">
+    <video controls muted loop>
         <source src="vid6.mp4" type="video/mp4">
     </video>
-    <div class="arrow" onclick="document.getElementById('v7').scrollIntoView({behavior:'smooth'})">⬇</div>
 </div>
 
-<div class="section" id="v7">
-    <video controls>
+<div class="section">
+    <video controls muted loop>
         <source src="vid7.mp4" type="video/mp4">
     </video>
 </div>
+
+<script>
+const videos = document.querySelectorAll("video");
+
+function checkVideos(){
+    videos.forEach(video => {
+        const rect = video.getBoundingClientRect();
+
+        if(rect.top >= 0 && rect.bottom <= window.innerHeight){
+            videos.forEach(v => {
+                if(v !== video){
+                    v.pause();
+                }
+            });
+            video.play();
+        } else {
+            video.pause();
+        }
+    });
+}
+
+window.addEventListener("scroll", checkVideos);
+
+videos.forEach(video => {
+    video.addEventListener("play", () => {
+        videos.forEach(v => {
+            if(v !== video){
+                v.pause();
+            }
+        });
+    });
+});
+
+checkVideos();
+</script>
 
 </body>
 </html>
