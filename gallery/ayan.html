@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ayan Gallery</title>
-
+<title>Ayan Gallery Dynamic</title>
 <style>
 html, body{
     margin:0;
@@ -13,26 +12,22 @@ html, body{
     background:black;
     overflow:hidden;
 }
-
 .container{
     height:100vh;
     overflow-y:scroll;
     scroll-snap-type:y mandatory;
 }
-
 .section{
     height:100vh;
     scroll-snap-align:start;
     position:relative;
 }
-
 video{
     width:100%;
     height:100%;
     object-fit:contain;
     background:black;
 }
-
 .info{
     position:absolute;
     right:20px;
@@ -43,7 +38,6 @@ video{
     flex-direction:column;
     gap:15px;
 }
-
 button{
     background:none;
     border:none;
@@ -51,7 +45,6 @@ button{
     font-size:24px;
     cursor:pointer;
 }
-
 .tap{
     position:fixed;
     inset:0;
@@ -68,50 +61,35 @@ button{
 <body>
 
 <div class="tap" id="tap">Tap to Start</div>
-
-<div class="container">
-
-<div class="section">
-    <video loop id="video1"><source src="vid.mp4" type="video/mp4"></video>
-    <div class="info"><button onclick="likeVideo(1)">❤️ <span id="like1">0</span></button><div>👁️ <span id="view1">0</span></div></div>
-</div>
-
-<div class="section">
-    <video loop id="video2"><source src="vid2.mp4" type="video/mp4"></video>
-    <div class="info"><button onclick="likeVideo(2)">❤️ <span id="like2">0</span></button><div>👁️ <span id="view2">0</span></div></div>
-</div>
-
-<div class="section">
-    <video loop id="video3"><source src="vid3.mp4" type="video/mp4"></video>
-    <div class="info"><button onclick="likeVideo(3)">❤️ <span id="like3">0</span></button><div>👁️ <span id="view3">0</span></div></div>
-</div>
-
-<div class="section">
-    <video loop id="video4"><source src="vid4.mp4" type="video/mp4"></video>
-    <div class="info"><button onclick="likeVideo(4)">❤️ <span id="like4">0</span></button><div>👁️ <span id="view4">0</span></div></div>
-</div>
-
-<div class="section">
-    <video loop id="video5"><source src="vid5.mp4" type="video/mp4"></video>
-    <div class="info"><button onclick="likeVideo(5)">❤️ <span id="like5">0</span></button><div>👁️ <span id="view5">0</span></div></div>
-</div>
-
-<div class="section">
-    <video loop id="video6"><source src="vid6.mp4" type="video/mp4"></video>
-    <div class="info"><button onclick="likeVideo(6)">❤️ <span id="like6">0</span></button><div>👁️ <span id="view6">0</span></div></div>
-</div>
-
-<div class="section">
-    <video loop id="video7"><source src="vid7.mp4" type="video/mp4"></video>
-    <div class="info"><button onclick="likeVideo(7)">❤️ <span id="like7">0</span></button><div>👁️ <span id="view7">0</span></div></div>
-</div>
-
-</div>
+<div class="container" id="container"></div>
 
 <script>
-const videos = document.querySelectorAll("video");
+const container = document.getElementById("container");
 let started = false;
 
+// Dynamically create up to 100 videos
+for(let i=1;i<=100;i++){
+    const section = document.createElement("div");
+    section.className = "section";
+
+    const video = document.createElement("video");
+    video.loop = true;
+    video.id = "video"+i;
+    video.src = "vid"+i+".mp4";
+
+    const info = document.createElement("div");
+    info.className = "info";
+    info.innerHTML = `<button onclick="likeVideo(${i})">❤️ <span id="like${i}">0</span></button>
+                      <div>👁️ <span id="view${i}">0</span></div>`;
+
+    // Only append if video exists
+    video.onerror = ()=> section.remove();
+    section.appendChild(video);
+    section.appendChild(info);
+    container.appendChild(section);
+}
+
+// Initialize likes and views
 function likeVideo(id){
     let likes = localStorage.getItem("like"+id) || 0;
     likes++;
@@ -119,24 +97,25 @@ function likeVideo(id){
     document.getElementById("like"+id).textContent = likes;
 }
 
-for(let i=1;i<=7;i++){
-    document.getElementById("like"+i).textContent = localStorage.getItem("like"+i) || 0;
-    document.getElementById("view"+i).textContent = localStorage.getItem("view"+i) || 0;
+// Load saved likes/views
+function initCounts(){
+    for(let i=1;i<=100;i++){
+        if(document.getElementById("like"+i)){
+            document.getElementById("like"+i).textContent = localStorage.getItem("like"+i) || 0;
+            document.getElementById("view"+i).textContent = localStorage.getItem("view"+i) || 0;
+        }
+    }
 }
 
+// Check which video is visible and autoplay
 function checkVisibleVideo(){
     if(!started) return;
-
+    const videos = document.querySelectorAll("video");
     videos.forEach((video,index)=>{
         const rect = video.getBoundingClientRect();
-
         if(rect.top >= 0 && rect.top < window.innerHeight/2){
-            videos.forEach(v=>{
-                if(v !== video) v.pause();
-            });
-
+            videos.forEach(v=>{ if(v!==video) v.pause(); });
             video.play();
-
             if(!video.dataset.viewed){
                 let views = localStorage.getItem("view"+(index+1)) || 0;
                 views++;
@@ -155,6 +134,7 @@ document.querySelector(".container").addEventListener("scroll", checkVisibleVide
 document.getElementById("tap").onclick = function(){
     started = true;
     this.style.display = "none";
+    initCounts();
     checkVisibleVideo();
 };
 </script>
