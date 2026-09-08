@@ -3,99 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Gaming Hub</title>
+    <title>Free Roblox Servers Hub</title>
+    <!-- Tailwind CSS CDN for modern utility styling -->
+    <script src="https://jsdelivr.net"></script>
     <style>
-        /* Reset and Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
         body {
             background-color: #0f1115;
             color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* Card Container */
-        .container {
-            background: #1a1d24;
-            padding: 40px 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-            border: 1px solid #2a2f3a;
-        }
-
-        h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        p {
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-        /* Buttons Grid */
-        .links-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* Common Button Style */
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 14px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
-            color: #ffffff;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
-
-        /* Discord Brand Color */
-        .btn-discord {
-            background-color: #5865F2;
-        }
-        .btn-discord:hover {
-            box-shadow: 0 0 15px rgba(88, 101, 242, 0.4);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
     </style>
 </head>
-<body>
+<body class="flex min-h-screen items-center justify-center p-5">
 
-    <div class="container">
-        <h1>Welcome to the Hub</h1>
-        <p>Connect with me on Discord</p>
+    <!-- Main Card Container -->
+    <div class="w-full max-w-[400px] rounded-2xl border border-[#2a2f3a] bg-[#1a1d24] px-[30px] py-10 text-center shadow-2xl">
         
-        <div class="links-grid">
-            <a href="https://discord.gg" target="_blank" class="btn btn-discord">Join Discord</a>
+        <!-- Header -->
+        <h1 class="mb-2 text-2xl font-semibold tracking-wide">
+            Free Roblox Servers
+        </h1>
+        
+        <!-- Subtext -->
+        <p class="mb-[30px] text-sm text-[#94a3b8]">
+            Connect with our community on Discord
+        </p>
+        
+        <!-- Discord Button -->
+        <div class="flex flex-col">
+            <a href="https://discord.gg" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shadow-lg hover:shadow-[#5865f2]/20 block decoration-none text-center">
+                Join Discord
+            </a>
         </div>
+
     </div>
 
 </body>
