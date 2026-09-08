@@ -1,45 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Roblox Servers Hub</title>
-    <!-- Tailwind CSS CDN for modern utility styling -->
-    <script src="https://jsdelivr.net"></script>
-    <style>
-        body {
-            background-color: #0f1115;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-    </style>
-</head>
-<body class="flex min-h-screen items-center justify-center p-5">
+import { Button } from "@/components/ui/button";
 
-    <!-- Main Card Container -->
-    <div class="w-full max-w-[400px] rounded-2xl border border-[#2a2f3a] bg-[#1a1d24] px-[30px] py-10 text-center shadow-2xl">
-        
-        <!-- Header -->
-        <h1 class="mb-2 text-2xl font-semibold tracking-wide">
-            Free Roblox Servers
+export default function Index() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[#0f1115] p-5 text-white font-sans">
+      <div className="w-full max-w-[400px] rounded-2xl border border-[#2a2f3a] bg-[#1a1d24] px-[30px] py-10 text-center shadow-2xl">
+        <h1 className="mb-2 text-2xl font-semibold tracking-wide">
+          Welcome to the Hub
         </h1>
-        
-        <!-- Subtext -->
-        <p class="mb-[30px] text-sm text-[#94a3b8]">
-            Connect with our community on Discord
+        <p className="mb-[30px] text-sm text-[#94a3b8]">
+          Connect with me on Discord
         </p>
         
-        <!-- Discord Button -->
-        <div class="flex flex-col">
-            <a href="https://discord.gg" 
-               target="_blank" 
-               rel="noopener noreferrer" 
-               class="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-semibold py-4 px-6 rounded-lg transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shadow-lg hover:shadow-[#5865f2]/20 block decoration-none text-center">
-                Join Discord
+        <div className="flex flex-col gap-4">
+          <Button 
+            asChild
+            className="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-semibold py-6 rounded-lg transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 shadow-lg hover:shadow-[#5865f2]/20"
+          >
+            <a 
+              href="https://discord.gg" 
+              target="_blank" 
+              rel="noopener noreferrer"
+            >
+              Join Discord
             </a>
+          </Button>
         </div>
-
+      </div>
     </div>
-
-</body>
-</html>
+  );
+}
